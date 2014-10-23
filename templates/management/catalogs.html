@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-hans">
+  <head>
+    {% include 'header.html' %}
+  </head>
+  <body>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4">
+                <input type="text" class="form-control" id="inputName" placeholder="请输入类别名">
+            </div>
+            <div class="col-sm-4"><button class="btn btn-primary">增加</button></div>
+
+        </div>
+        <div class="table-responsive" >
+            <table class="table table-hover">
+                <thead>
+                    <tr><th>目录</th><th>操作</th></tr>
+                </thead>
+                <tbody>
+                    {% for c in catalogs %}
+                    <tr><td>{{ c.name }}</td><td>{{ c.name }}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+  {% include 'footer.html' %}
+  <script>
+  function deleteCatalog(button, cid) {
+
+        $.post("/ajax/contact/delete",
+                 {contact_id: cid, _csrf_token: "{{ csrf_token() }}"},
+               function (data, textStatus){
+
+                if (data.status != 0) {
+                    alert(data.error);
+                    return;
+                }
+
+                button.parentNode.parentNode.style.display = "none";
+
+          });
+    }
+  </script>
+  </body>
+</html>
+

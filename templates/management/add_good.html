@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-hans">
+  <head>
+    {% include 'header.html' %}
+  </head>
+  <body>
+
+    <div class="container">
+
+    <form  class="form-horizontal" id="addGoodForm" method="post" action="/management/good/addition" role="form" onsubmit="return addGoodValidateForm();" >
+      <div class="row form-group">
+          <label class="col-xs-2" for="inputName">商品名称</label>
+          <div class="col-xs-4">
+              <input name="name" type="text" class="form-control" id="inputName" placeholder="请输入商品名">
+          </div>
+      </div>
+
+      <div class="row form-group">
+          <label class="col-xs-2" for="inputPrice">商品价格</label>
+          <div class="col-xs-4 input-group">
+              <span class="input-group-addon">￥</span>
+              <input name="price" type="text" class="form-control" id="inputPrice" placeholder="请输入价格">
+          </div>
+      </div>
+      <div class="row form-group">
+          <label class="col-xs-2" for="inputTotal">商品库存</label>
+          <div class="col-xs-4">
+              <input name="total" type="text" class="form-control" id="inputTotal" value="999999" placeholder="请输入库存">
+          </div>
+      </div>
+
+      <div class="row form-group">
+          <label class="col-xs-2">可选类别</label>
+          <input id="inputHiddenSelectCatalog" type="hidden" name="catalog">
+          <div class="row col-xs-10">
+              {% for c in catalogs %}
+              <div class="col-xs-2">
+                  <label class="radio-inline">
+                      <input type="radio" name="inputSelectCatalogRatio" id="inputSelectCatalog_{{ c.catalogid }}" value="{{ c.name }}">{{ c.name }}
+                  </label>
+              </div>
+
+              {% endfor %}
+              <div class="col-xs-6 row">
+                  <div class="col-xs-3">
+                      <label class="radio-inline">
+                      <input type="radio" name="inputSelectCatalogRatio" id="inputSelectCatalog_0">其他
+                      </label>
+                  </div>
+                  <div class="col-xs-4">
+                      <input type="text" class="form-control" id="inputCustomCatalogValue" placeholder="添加新类别">
+                  </div>
+              </div>
+              <div></div>
+          </div>
+      </div>
+      <div class="row form-group">
+          <label class="col-xs-2" for="inputDescription">商品说明</label>
+          <div class="col-xs-4">
+              <textarea rows="5" name="description" class="form-control" id="inputDescription" placeholder="请输入商品描述"></textarea>
+          </div>
+      </div>
+      <input type="hidden" name="_csrf_token_" value="{{ csrf_token() }}">
+
+      <button class="btn btn-primary">提交</button>
+    </form>
+
+
+    </div>
+
+  {% include 'footer.html' %}
+  <script>
+        $("#addGoodForm").fadeOut("slow");
+      function addGoodValidateForm() {
+        if (!document.getElementById("inputName").value) {
+            alert("输入名字！");
+            return false;
+        }
+
+        var otherCata = document.getElementById("inputSelectCatalog_0");
+        var catalog = document.getElementById("inputHiddenSelectCatalog");
+
+        var catalogname = document.getElementById("inputCustomCatalogValue").value;
+        if (!otherCata.checked) {
+            catalogname = $('input[name=inputSelectCatalogRatio]:checked', '#addGoodForm').val();
+        }
+        catalog.value = catalogname;
+
+        if (!catalogname) {
+            alert("选择或者输入类别！");
+            return false;
+        }
+
+        if (!document.getElementById("inputPrice").value) {
+            alert("输入价格！");
+            return false;
+        }
+
+        return true;
+      }
+
+  </script>
+  </body>
+</html>
+

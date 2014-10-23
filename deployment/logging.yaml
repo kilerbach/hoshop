@@ -1,0 +1,45 @@
+version: 1
+disable_existing_loggers: no
+
+formatters:
+  simple:
+    format: '%(asctime)s [%(levelname)s][%(name)s] %(message)s'
+  basic:
+    format: '%(asctime)s [%(levelname)s] %(message)s'
+  reduced:
+    format: '%(asctime)s %(message)s'
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: simple
+    stream: ext://sys.stdout
+  request:
+    class: logging.handlers.WatchedFileHandler
+    level: INFO
+    formatter: basic
+    filename: /data/logs/hoshop/request.log
+  spy:
+    class: logging.handlers.WatchedFileHandler
+    level: INFO
+    formatter: reduced
+    filename: /data/logs/hoshop/costtime.log
+
+loggers:
+  hoshop.request:
+    level: INFO
+    handlers: [request]
+    propagate: no
+    qualname: hoshop.request
+  hoshop.spy:
+    level: INFO
+    handlers: [spy]
+    propagate: no
+    qualname: hoshop.spy
+  sqlalchemy:
+    propagate: no
+
+root:
+  level: DEBUG
+  handlers: [console]

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-hans">
+  <head>
+    {% include 'header.html' %}
+  </head>
+  <body>
+
+    <div class="container">
+
+    {% for c in catalogs %}
+        <div class="row">
+            <div style="background-color:#0AF">
+                {{ c.name }}
+            </div>
+        </div>
+        {% for g in goods %}
+        {% if g.catalogid == c.catalogid %}
+        <div class="row" style="padding:10px">
+            <div class="col-xs-8"><p>{{ g.name }}</p></div>
+            <div class="col-xs-4">
+                <button class="btn btn-primary" onclick="addToCart({{ g.goodid }})">￥{{ g.price/1000 }}</button>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    {% endfor %}
+
+    </div>
+
+  <div id="hd-cart">
+      <span id="hd-cart-logo"></span>
+      <div id="hd-cart-summery">
+          <span id="hd-cart-count">N/A</span>件商品，共
+          <span id="hd-cart-bill">N/A</span>元
+      </div>
+      <div>
+          <a class="btn btn-primary" id="hd-cart-submit" href="{{ url_for('shop.show_cart') }}">去结算</a>
+      </div>
+  </div>
+
+  {% include 'footer.html' %}
+
+  <script>
+    function flushCart() {
+        $.post(
+          "/ajax/cart",
+          {_csrf_token_: "{{ csrf_token() }}"},
+          function (data, textStatus){
+
+            if (data.status != 0) {
+                alert(data.error);
+                return;
+            }
+
+            var count = document.getElementById("hd-cart-count");
+            var bill = document.getElementById("hd-cart-bill");
+            count.innerHTML = data.data.count;
+            bill.innerHTML = data.data.bill/1000;
+      });
+    };
+
+    function addToCart(goodid) {
+        $.post(
+          "{{ url_for("ajax.cart.add_good_to_cart") }}",
+          {_csrf_token_: "{{ csrf_token() }}", goodid: goodid},
+          function (data, textStatus){
+
+            if (data.status != 0) {
+                alert(data.error);
+                return;
+            }
+            flushCart();
+      });
+    }
+
+    document.ready = function () {
+        flushCart();
+    };
+  </script>
+  </body>
+</html>
+

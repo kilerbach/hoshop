@@ -1,0 +1,8 @@
+location  /hoshop {
+    include uwsgi_params;
+    uwsgi_pass unix:/data/apps/run/uwsgi_hoshop.sock;
+
+    access_log /data/logs/hoshop/access.log brackets;
+    error_log /data/logs/hoshop/error.log  warn;
+}
+

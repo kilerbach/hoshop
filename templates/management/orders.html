@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-hans">
+  <head>
+    {% include 'header.html' %}
+  </head>
+  <body>
+
+    <div class="container">
+
+    {% for order in orders %}
+    <div class="hd-user-order">
+        <table class="table table-hover">
+            <thead>
+                <tr class="row">
+                    <th class="col-xs-4">{{ order.modified_time }}</th>
+                    <th class="col-xs-1">单价</th>
+                    <th class="col-xs-1">送达地址</th>
+                    <th class="col-xs-1">总价</th>
+                    <th class="col-xs-5">订单状态</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr class="row">
+                <td>
+                {% for g in order.goodlist %}
+                {% for idx in range(g.count) %}
+                    <p>{{ g.name }}</p>
+                {% endfor %}
+                {% endfor %}
+                </td>
+                <td>
+                {% for g in order.goodlist %}
+                {% for idx in range(g.count) %}
+                    <p>￥{{ g.price/1000 }}</p>
+                {% endfor %}
+                {% endfor %}
+                </td>
+                <td rowspan="{{ order.count }}">{{ order.contact.address}}</td>
+                <td rowspan="{{ order.count }}">￥{{ order.bill/1000 }}</td>
+                <td rowspan="{{ order.count }}">
+                {% for s in order.status %}
+                    <div class="row">
+                        {% for i in [10, 20, 30, 40] %}
+                        <!--<div class="col-xs-3">-->
+                            {% if i <= s.to_status %}
+                            <button class="btn btn-warning">{{ order_status_mapping[i] }}</button>
+                            {% else %}
+                            <button class="btn btn-primary">{{ order_status_mapping[i] }}</button>
+                            {% endif %}
+                        <!--</div>-->
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="hd-horizontal-line"></div>
+
+    </div>
+    {% endfor %}
+    <div id="hd-new-orders" class="row alert alert-danger">
+      <strong>注意：</strong>有
+      <a href="{{ url_for('management.list_orders') }}" class="alert-link">
+          <span id="hd-new-orders-count">N/A</span>个新订单</a>！
+      请刷新页面。
+    </div>
+  </div>
+
+  {% include 'footer.html' %}
+  <script>
+    var refreshIntervalId = 0;
+    function hoshopTitleScroller(text) {
+        document.title = text;
+        setTimeout(function () {
+            hoshopTitleScroller(text.substr(1) + text.substr(0, 1));
+        }, 300);
+    };
+
+    function hoshopShowNewOrderAlert(){
+       document.getElementById("hd-new-orders").style.display = "block";
+       var au = new Audio("{{ url_for('static', filename='sounds/popcorn.m4r') }}");
+       au.play();
+       hoshopTitleScroller(document.title + "【有新订单】");
+    };
+
+      document.ready = function () {
+        var msgbox = document.getElementById("hd-new-orders");
+        msgbox.style.display = "none";
+
+        refreshIntervalId = setInterval(hoshopSyncOrders, 10000);
+
+        //setTimeout("hoshopShowNewOrderAlert();", 2000);
+
+      };
+      var lastSyncCursor = "{{ forward_cursor }}";
+      function hoshopSyncOrders() {
+        $.post(
+            "{{ url_for('ajax.cart.sync_orders') }}",
+            {_csrf_token_: "{{ csrf_token() }}", cursor: lastSyncCursor, asc: 1, limit: 10},
+            function (data, textStatus){
+                if (data.status != 0) {
+                    alert(data.error);
+                    return;
+                }
+                if (data.data.orders.length <= 0) {
+                    return;
+                }
+
+                clearInterval(refreshIntervalId);
+
+                lastSyncCursor = data.data.forward_cursor;
+
+                var countNewOrders = document.getElementById("hd-new-orders-count");
+                countNewOrders.innerHTML = data.data.orders.length;
+
+                hoshopShowNewOrderAlert();
+
+            }
+        );
+      }
+
+  </script>
+  </body>
+</html>
+

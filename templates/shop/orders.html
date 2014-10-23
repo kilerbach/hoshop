@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-hans">
+  <head>
+    {% include 'header.html' %}
+  </head>
+  <body>
+
+    <div class="container">
+
+
+    {% for order in orders %}
+    <div class="hd-user-order">
+    <table class="table table-hover">
+        <thead>
+            <tr class="row">
+                <th class="col-xs-8">零食列表</th>
+                <th class="col-xs-2">{{ order.count }}份</th>
+                <th class="col-xs-2">￥{{ order.bill/1000 }}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for g in order.goodlist %}
+        {% for idx in range(g.count) %}
+        <tr class="row">
+            <td>{{ g.name }}</td>
+            <td>1份</td>
+            <td>￥{{ g.price/1000 }}</td>
+        </tr>
+        {% endfor %}
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <table class="table table-hover">
+        <thead>
+            <tr class="row"><th colspan="3">订单信息</th></tr>
+        </thead>
+        <tbody>
+        <tr class="row">
+            <td class="col-xs-4">送达地址：</td>
+            <td class="col-xs-8">{{ order.contact.address }}</td>
+        </tr>
+        <tr class="row">
+            <td class="col-xs-4">支付方式：</td>
+            <td class="col-xs-8">现金支付</td>
+        </tr>
+        <tr class="row">
+            <td class="col-xs-4">订单状态：</td>
+            <td>
+            {% for s in order.status %}
+                <div class="row">
+                    <div class="col-xs-4">{{ s.created_time.strftime("%H:%M") }}</div>
+                    <div class="col-xs-4">{{ order_status_mapping[s.to_status] }}</div>
+                </div>
+            {% endfor %}
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    </div>
+    <div class="hd-horizontal-line"></div>
+
+    {% endfor %}
+    </div>
+
+  {% include 'footer.html' %}
+
+  </body>
+</html>
+

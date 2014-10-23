@@ -1,0 +1,11 @@
+{
+
+    "DEBUG": true,
+
+    "SERVER_SESSION_KEY": "_your_flask_session_key_",
+
+    "SERVER_SIGNATURE_KEY": "_your_login_url_signatrue_key_",
+
+    "DB_FILE": "sqlite:////data/db/hoshop.db"
+
+}

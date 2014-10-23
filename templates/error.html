@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-hans">
+  <head>
+    {% include 'header.html' %}
+  </head>
+  <body>
+
+    <div class="container">
+
+        <h1 class="white-font">出错啦</h1>
+
+        {% if msg %}
+        <p class="white-font">{{ msg }}</p>
+        {% endif %}
+        {% if raw %}
+        {{ raw|safe }}
+        {% endif %}
+
+    </div>
+
+  {% include 'footer.html' %}
+  </body>
+</html>
+
