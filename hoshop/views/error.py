@@ -28,7 +28,6 @@ SESSION_USERID = 'userid'
 
 @application.before_request
 def check_session():
-    print session
     userid = session.get(SESSION_USERID)
     if not userid:
         userid = 0

@@ -27,7 +27,7 @@ application.secret_key = C.SERVER_SESSION_KEY
 from hoshop.views import (
     shop,
     error as _views_error,
-    management,
+    admin,
 )
 from hoshop.apis import (
     catalog as _apis_catalog,
@@ -37,7 +37,7 @@ from hoshop.apis import (
 application.register_blueprint(shop.app)
 application.register_blueprint(_apis_catalog.app, url_prefix='/ajax')
 application.register_blueprint(_apis_cart.app, url_prefix='/ajax')
-application.register_blueprint(management.app, url_prefix='/management')
+application.register_blueprint(admin.app, url_prefix='/admin')
 
 
 def main():

@@ -19,18 +19,20 @@ def get_template_path(name):
     return os.path.join(TEMPLATE_ROOT, name)
 
 
-def log_costtime(func, logger):
-    frm = inspect.stack()[1]
-    mod = inspect.getmodule(frm[0])
-    funcname = mod.__name__ + '.' + func.__name__
+def log_costtime(logger):
+    def _d(func):
+        frm = inspect.stack()[1]
+        mod = inspect.getmodule(frm[0])
+        funcname = mod.__name__ + '.' + func.__name__
 
-    @functools.wraps(func)
-    def wrapper(*a, **kw):
-        st = time.time()
-        try:
-            return func(*a, **kw)
-        finally:
-            ct = time.time() - st
-            logger.info("%s - %dms", funcname, int(ct))
+        @functools.wraps(func)
+        def wrapper(*a, **kw):
+            st = time.time()
+            try:
+                return func(*a, **kw)
+            finally:
+                ct = time.time() - st
+                logger.info("%s - %dms", funcname, int(ct))
 
-    return wrapper
+        return wrapper
+    return _d

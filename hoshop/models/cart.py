@@ -5,8 +5,13 @@ Author: ilcwd
 """
 from . import db
 from .objects import Cart, CartList, OrderStatus, now
+from hoshop.core import (
+    misc,
+    spy_logger,
+)
 
 
+@misc.log_costtime(spy_logger)
 def create_cart(userid):
     cart = Cart(userid=userid, is_commit=False, bill=0, count=0,
                 status=Cart.STATUS.UNSET, contactid=0)
@@ -16,16 +21,19 @@ def create_cart(userid):
     return cart.cartid
 
 
+@misc.log_costtime(spy_logger)
 def get_cart(cartid):
     sess = db.DBSession()
     return sess.query(Cart).filter(Cart.cartid == cartid).one()
 
 
+@misc.log_costtime(spy_logger)
 def get_goodlist(cartid):
     sess = db.DBSession()
     return sess.query(CartList).filter(CartList.cartid == cartid).all()
 
 
+@misc.log_costtime(spy_logger)
 def delete_good(cartid, goodid):
     sess = db.DBSession()
 
@@ -52,6 +60,7 @@ def delete_good(cartid, goodid):
     return 1
 
 
+@misc.log_costtime(spy_logger)
 def add_good(cartid, goodid, price, discount=100, comment=''):
     sess = db.DBSession()
 
@@ -77,6 +86,7 @@ def add_good(cartid, goodid, price, discount=100, comment=''):
     return 1
 
 
+@misc.log_costtime(spy_logger)
 def create_order(cartid, contactid):
     if not contactid:
         return 0
@@ -100,6 +110,7 @@ def create_order(cartid, contactid):
     return cart
 
 
+@misc.log_costtime(spy_logger)
 def update_order_status(orderid, to_status, userid, comment):
     sess = db.DBSession()
     order = sess.query(Cart).filter(Cart.cartid == orderid).one()
@@ -117,17 +128,20 @@ def update_order_status(orderid, to_status, userid, comment):
     return 1
 
 
+@misc.log_costtime(spy_logger)
 def find_orders(userid):
     sess = db.DBSession()
     carts = sess.query(Cart).filter(Cart.userid == userid).filter(Cart.is_commit == True).all()
     return carts
 
 
+@misc.log_costtime(spy_logger)
 def find_order_status(orderid):
     sess = db.DBSession()
     return sess.query(OrderStatus).filter(OrderStatus.orderid == orderid).all()
 
 
+@misc.log_costtime(spy_logger)
 def find_orders_incrementally(orderid=None, limit=10, asc=True):
     if orderid is None:
         if asc:

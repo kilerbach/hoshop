@@ -10,7 +10,7 @@ from ..services import shop, cart
 from ..models import objects
 from ..core import TEMPLATE_ROOT
 
-app = flask.Blueprint('management', __name__, template_folder=TEMPLATE_ROOT)
+app = flask.Blueprint('admin', __name__, template_folder=TEMPLATE_ROOT)
 
 
 @app.context_processor
@@ -23,7 +23,7 @@ def inject_values():
 @app.route('/good/addition', methods=['GET'])
 def add_good_view():
     r = shop.find_catalogs()
-    return flask.render_template('management/add_good.html',
+    return flask.render_template('admin/add_good.html',
                                  catalogs=r.data['catalogs'])
 
 
@@ -46,6 +46,6 @@ def add_good_do():
 @app.route('/order/', methods=['GET', 'POST'])
 def list_orders():
     r = cart.sync_orders(limit=10)
-    return flask.render_template('management/orders.html',
+    return flask.render_template('admin/orders.html',
                                  orders=r.data['orders'],
                                  forward_cursor=r.data.get('forward_cursor', ''))

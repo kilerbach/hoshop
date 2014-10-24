@@ -3,50 +3,18 @@
 
 Author: ilcwd
 """
-import datetime
-
 from . import db
-from .objects import Good
-
-CATALOG_ROOT = 0
+from .objects import UserLogin, User, UserOAuth
 
 
-def _set_date(d, default):
-    if not d:
-        d = default
-
-    if isinstance(d, (datetime.datetime, datetime.date)):
-        return d
-
-    return datetime.datetime.strptime(d, '%Y-%m-%d')
+def login_oauth(user, source):
+    pass
 
 
-def create_good(name, price, catalogid, total=99999999, description='', start_time=None, expired_time=None):
-    start_time = _set_date(start_time, '2000-1-1')
-    expired_time = _set_date(expired_time, '2099-1-1')
-
-    good = Good(
-        name=name,
-        price=price,
-        catalogid=catalogid,
-        count_total=total,
-        count_sold=0,
-        description=description,
-        start_time=start_time,
-        expired_time=expired_time,
-    )
-
-    with db.create_session() as sess:
-        sess.add(good)
-
-    return 1
+def login(loginid, password, logintype):
+    pass
 
 
-def find_goods():
-    sess = db.DBSession()
-    return sess.query(Good).all()
+def get_user(userid):
+    pass
 
-
-def get_good(goodid):
-    sess = db.DBSession()
-    return sess.query(Good).filter(Good.goodid == goodid).one()

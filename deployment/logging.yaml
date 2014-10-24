@@ -29,12 +29,12 @@ handlers:
 loggers:
   hoshop.request:
     level: INFO
-    handlers: [request]
+    handlers: [console]
     propagate: no
     qualname: hoshop.request
   hoshop.spy:
     level: INFO
-    handlers: [spy]
+    handlers: [console]
     propagate: no
     qualname: hoshop.spy
   sqlalchemy:

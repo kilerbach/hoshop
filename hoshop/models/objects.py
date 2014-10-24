@@ -152,6 +152,7 @@ class User(Base):
     __tablename__ = 'user'
 
     userid = Column(INT, primary_key=True)
+    nickname = Column(VARCHAR(64), nullable=False)
     role = Column(INT, nullable=False)
     password = Column(VARBINARY(128), nullable=False)
     created_time = Column(DATETIME(), nullable=False, default=now)
@@ -159,6 +160,9 @@ class User(Base):
     class ROLE:
         NORMAL = 0
         ADMIN = 0xFFFFFFFF
+
+    def is_admin(self):
+        return self.role == self.ROLE.ADMIN
 
 
 class UserOAuth(Base):
