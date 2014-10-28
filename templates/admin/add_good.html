@@ -5,6 +5,8 @@
   </head>
   <body>
 
+    {% include 'admin/nav.html' %}
+
     <div class="container">
 
     <form  class="form-horizontal" id="addGoodForm" method="post" action="{{ url_for('admin.add_good_do') }}" role="form" onsubmit="return addGoodValidateForm();" >
@@ -70,7 +72,11 @@
 
   {% include 'footer.html' %}
   <script>
-        $("#addGoodForm").fadeOut("slow");
+      window.onload = function () {
+          document.getElementById("id-hs-add-good").className += " active";
+      };
+
+      // $("#addGoodForm").fadeOut("slow");
       function addGoodValidateForm() {
         if (!document.getElementById("inputName").value) {
             alert("输入名字！");

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-hans">
+  <head>
+    {% include 'header.html' %}
+  </head>
+  <body>
+
+    <div class="container">
+      <form class="hs-form-signin" role="form" method="POST" action="{{ url_for('user.login') }}" onsubmit="return hsValidateLoginForm();">
+        <h2 class="hs-form-signin-heading">请登录</h2>
+        {% if error %}
+          <div class="alert alert-danger" role="alert">{{ error }}</div>
+        {% endif %}
+        <input type="hidden" name="_csrf_token_" value="{{ csrf_token() }}">
+        <input type="hidden" name="logintype" value="3">
+        <input type="hidden" name="next" value="{{ next }}">
+        <input type="text" name="loginid" class="form-control" placeholder="用户名" required autofocus>
+        <input type="password" name="password" id="id-hs-login-password" class="form-control" placeholder="密码" required>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">登录</button>
+      </form>
+    </div>
+
+  {% include 'footer.html' %}
+
+  <script src="//www.ho-dao.com/s/js/cryptojs-3.1.2/rollups/sha256.js"></script>
+  <script src="//www.ho-dao.com/s/js/cryptojs-3.1.2/components/enc-base64-min.js"></script>
+  <script>
+  function hsValidateLoginForm() {
+    var pwd = document.getElementById("id-hs-login-password");
+    var p = CryptoJS.SHA256(pwd.value).toString(CryptoJS.enc.Base64);
+
+    if (p.length != 44) {
+        alert(p.length);
+        return false;
+    }
+    pwd.value = p;
+
+    return true;
+  }
+  </script>
+  </body>
+</html>
+

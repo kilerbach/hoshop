@@ -14,3 +14,11 @@ def render_error(error):
 def render_data(data=None):
     return flask.jsonify({"status": 0, "data": data}), 200
 
+
+def render_dto(dto):
+    if dto.ok():
+        return render_data(dto.data)
+
+    return render_error(dto.error)
+
+

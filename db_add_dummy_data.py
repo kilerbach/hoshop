@@ -3,18 +3,21 @@
 
 Author: ilcwd
 """
-
+import hashlib
 
 import wsgiapp
 
-from hoshop.models.db import Base, engine
-from hoshop.models import good, catalog
+from hoshop.models._db import db
+from hoshop.models import _objects
+from hoshop.models import good, catalog, user
 
 
 def main():
+    def h(p):
+        return hashlib.sha256(str(p)).digest()
 
-    Base.metadata.drop_all(engine)
-    Base.metadata.create_all(engine)
+    db.drop_all()
+    db.create_all()
 
     catalog.create_catalog(u"饮品")
     catalog.create_catalog(u"烟类")
@@ -31,6 +34,11 @@ def main():
     good.create_good(u"出前一丁", 2500, 3)
 
     good.create_good(u"威化饼", 5500, 4)
+
+    user.create_user(_objects.UserLogin.LOGINTYPE.NAME, 'admin', h('111111'), role=_objects.User.ROLE.ADMIN)
+    user.create_user(_objects.UserLogin.LOGINTYPE.NAME, 'test', h('111111'), role=_objects.User.ROLE.NORMAL)
+
+    db.session.commit()
 
 if __name__ == '__main__':
     main()

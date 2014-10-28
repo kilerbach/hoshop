@@ -26,18 +26,20 @@ application.secret_key = C.SERVER_SESSION_KEY
 # register APIs after `C.load_config()`
 from hoshop.views import (
     shop,
-    error as _views_error,
+    default,
     admin,
+    user,
 )
 from hoshop.apis import (
     catalog as _apis_catalog,
     cart as _apis_cart,
 )
 
-application.register_blueprint(shop.app)
-application.register_blueprint(_apis_catalog.app, url_prefix='/ajax')
-application.register_blueprint(_apis_cart.app, url_prefix='/ajax')
-application.register_blueprint(admin.app, url_prefix='/admin')
+application.register_blueprint(shop.app, url_prefix='/hoshop')
+application.register_blueprint(user.app, url_prefix='/hoshop/user')
+application.register_blueprint(_apis_catalog.app, url_prefix='/hoshop/ajax')
+application.register_blueprint(_apis_cart.app, url_prefix='/hoshop/ajax')
+application.register_blueprint(admin.app, url_prefix='/hoshop/admin')
 
 
 def main():

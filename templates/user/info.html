@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-hans">
+  <head>
+    {% include 'header.html' %}
+  </head>
+  <body>
+
+    {% with title="个人中心" %}
+    {% include 'shop/nav_back.html' %}
+    {% endwith %}
+
+    <div class="container">
+    <div class="row">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th class="col-xs-10" colspan="3">常用地址管理</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for c in contacts %}
+            <tr class="cl-hs-update-contact">
+                <td class="col-xs-8">{{ c.address }}
+                    {% if default_contact and c.contactid == default_contact.contactid %}
+                        <span>- 默认地址</span>
+                    {% endif %}
+                </td>
+                <td class="col-xs-2">
+                    <form action="{{ url_for('user.set_default_contact') }}" method="POST" role="form">
+                        <input type="hidden" name="_csrf_token_" value="{{ csrf_token() }}">
+                        <input type="hidden" name="contactid" value="{{ c.contactid }}">
+                        <button class="btn btn-primary cl-hs-update-contact-button" type="submit">设为默认</button>
+                    </form>
+                </td>
+                <td class="col-xs-1">
+                    <form action="{{ url_for('user.delete_contact') }}" method="POST" role="form">
+                        <input type="hidden" name="_csrf_token_" value="{{ csrf_token() }}">
+                        <input type="hidden" name="contactid" value="{{ c.contactid }}">
+                        <button class="btn btn-danger" type="submit">X</button>
+                    </form>
+                </td>
+            </tr>
+
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row">
+        <table class="table table-hover">
+            <thead><tr><td colspan="2">用户信息</td></tr></thead>
+            <tbody>
+                <tr><td>用户ID：</td><td>{{ user.userid }}</td></tr>
+                <tr><td>用户名：</td><td>{{ user.nickname }}</td></tr>
+                <tr><td>注册时间：</td><td>{{ user.created_time }}</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    </div>
+
+  {% include 'footer.html' %}
+
+  <script>
+  </script>
+  </body>
+</html>
+

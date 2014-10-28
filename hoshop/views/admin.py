@@ -7,20 +7,14 @@ Author: ilcwd
 import flask
 
 from ..services import shop, cart
-from ..models import objects
 from ..core import TEMPLATE_ROOT
+from .default import require_admin
 
 app = flask.Blueprint('admin', __name__, template_folder=TEMPLATE_ROOT)
 
 
-@app.context_processor
-def inject_values():
-    return dict(
-        order_status_mapping=objects.Cart.STATUS.MAPPING,
-    )
-
-
 @app.route('/good/addition', methods=['GET'])
+@require_admin
 def add_good_view():
     r = shop.find_catalogs()
     return flask.render_template('admin/add_good.html',
@@ -28,6 +22,7 @@ def add_good_view():
 
 
 @app.route('/good/addition', methods=['POST'])
+@require_admin
 def add_good_do():
     args = flask.request.form
     name = args['name']
@@ -40,10 +35,11 @@ def add_good_do():
     if r.ok():
         pass
 
-    return flask.redirect('/good/')
+    return flask.redirect(flask.url_for('shop.list_goods'))
 
 
 @app.route('/order/', methods=['GET', 'POST'])
+@require_admin
 def list_orders():
     r = cart.sync_orders(limit=10)
     return flask.render_template('admin/orders.html',

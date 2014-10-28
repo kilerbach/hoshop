@@ -8,50 +8,36 @@ import flask
 from ..services import shop
 from ..services import cart
 from ..core import TEMPLATE_ROOT
-from ..models import objects
+from .default import require_user, require_cart
 
 app = flask.Blueprint('shop', __name__, template_folder=TEMPLATE_ROOT)
 
 
-@app.context_processor
-def inject_values():
-    return dict(
-        order_status_mapping=objects.Cart.STATUS.MAPPING,
-    )
-
-
-@app.route('/catalog/')
-def list_catalog():
-    r = shop.find_catalogs()
-    return flask.render_template('management/catalogs.html', catalogs=r.data['catalogs'])
-
-
+@app.route('/')
 @app.route('/good/')
-def show_goods():
+@require_cart
+def list_goods():
     r = shop.show_goods()
     return flask.render_template('shop/goods.html',
                                  catalogs=r.data['catalogs'], goods=r.data['goods'])
 
 
 @app.route('/cart/')
-def show_cart():
+def get_cart():
     userid = flask.session['userid']
     cartid = flask.session['cartid']
-    r = cart.get_cart_details(cartid)
-    c = shop.get_primary_contact(userid)
-    if c.ok():
-        c = c.data
-    else:
-        c = None
+    r = cart.get_cart_details(userid, cartid)
+    cs = shop.find_contacts(userid)
 
-    return flask.render_template("shop/cart.html", cart=r.data, contact=c)
+    return flask.render_template("shop/cart.html", cart=r.data,
+                                 contacts=cs.data['contacts'], default_contact=cs.data['default'])
 
 
 @app.route('/order/')
+@require_cart
 def list_orders():
     userid = flask.session['userid']
     r = cart.list_orders(userid)
-    print r.data
     return flask.render_template("shop/orders.html", orders=r.data['orders'])
 
 
@@ -62,9 +48,9 @@ def submit_order():
     # TODO: avoid modify cart in other views
 
     address = flask.request.form.get('address')
-    contactid = flask.request.form.get('contactid')
+    setdefault = flask.request.form['setdefault'].lower() == 'on'
 
-    r = cart.submit_order(userid, cartid, contactid, address)
+    r = cart.submit_order(userid, cartid, address, setdefault)
     if r.ok():
         flask.session.pop('cartid')
 
@@ -72,10 +58,11 @@ def submit_order():
 
 
 @app.route('/cart/deletion/good', methods=['POST'])
+@require_cart
 def delete_good_from_cart():
-
+    userid = flask.session['userid']
     cartid = flask.request.form['cartid']
     goodid = flask.request.form['goodid']
 
-    cart.delete_good(cartid, goodid)
-    return flask.redirect(flask.url_for('shop.show_cart'))
+    cart.delete_good(userid, cartid, goodid)
+    return flask.redirect(flask.url_for('shop.get_cart'))

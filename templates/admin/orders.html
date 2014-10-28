@@ -5,6 +5,8 @@
   </head>
   <body>
 
+    {% include 'admin/nav.html' %}
+
     <div class="container">
 
     {% for order in orders %}
@@ -38,19 +40,13 @@
                 <td rowspan="{{ order.count }}">{{ order.contact.address}}</td>
                 <td rowspan="{{ order.count }}">￥{{ order.bill/1000 }}</td>
                 <td rowspan="{{ order.count }}">
-                {% for s in order.status %}
-                    <div class="row">
+                    <div class="row hd-update-order-button-row" id="hd-order-status-{{ order.cartid }}" title="{{ order.current_status }}">
                         {% for i in [10, 20, 30, 40] %}
-                        <!--<div class="col-xs-3">-->
-                            {% if i <= s.to_status %}
-                            <button class="btn btn-warning">{{ order_status_mapping[i] }}</button>
-                            {% else %}
-                            <button class="btn btn-primary">{{ order_status_mapping[i] }}</button>
-                            {% endif %}
-                        <!--</div>-->
+                        <button class="btn btn-success" name="{{ i }}" id="hd-order-status-{{ order.cartid }}-{{ i }}"
+                                onclick="hoshopUpdateOrder(this, {{ order.cartid }},{{ i }});">
+                            {{ order_status_mapping[i] }}</button>
                         {% endfor %}
                     </div>
-                {% endfor %}
                 </td>
             </tr>
             </tbody>
@@ -70,31 +66,57 @@
   {% include 'footer.html' %}
   <script>
     var refreshIntervalId = 0;
+    var lastSyncCursor = "{{ forward_cursor }}";
+
+
+    function hoshopColorizeOrderStatusButton(orderid, status) {
+        var ordrestatus = document.getElementById("hd-order-status-" + orderid);
+        for (var i=0; i < ordrestatus.childNodes.length; i++){
+            var childbutton = ordrestatus.childNodes[i];
+            if (childbutton.nodeName == "BUTTON") {
+                if (childbutton.name > status) {
+                    childbutton.className = childbutton.className.replace("btn-success", "btn-primary");
+                    childbutton.className = childbutton.className.replace("btn-warning", "btn-primary");
+                } else {
+                    childbutton.className = childbutton.className.replace("btn-success", "btn-warning");
+                    childbutton.className = childbutton.className.replace("btn-primary", "btn-warning");
+                    childbutton.disabled = true;
+                }
+            }
+        }
+    }
+
+
+    function hoshopUpdateOrder(btn, orderid, status) {
+        $.post(
+          "{{ url_for('ajax.cart.update_order') }}",
+          {_csrf_token_: "{{ csrf_token() }}", orderid: orderid, status: status},
+          function (data, textStatus) {
+              if (data.status != 0) {
+                  alert(data.error);
+                  return;
+              }
+
+              hoshopColorizeOrderStatusButton(orderid, status);
+          }
+        );
+    }
+
     function hoshopTitleScroller(text) {
         document.title = text;
         setTimeout(function () {
             hoshopTitleScroller(text.substr(1) + text.substr(0, 1));
         }, 300);
-    };
+    }
 
     function hoshopShowNewOrderAlert(){
        document.getElementById("hd-new-orders").style.display = "block";
        var au = new Audio("{{ url_for('static', filename='sounds/popcorn.m4r') }}");
        au.play();
        hoshopTitleScroller(document.title + "【有新订单】");
-    };
+    }
 
-      document.ready = function () {
-        var msgbox = document.getElementById("hd-new-orders");
-        msgbox.style.display = "none";
-
-        refreshIntervalId = setInterval(hoshopSyncOrders, 10000);
-
-        //setTimeout("hoshopShowNewOrderAlert();", 2000);
-
-      };
-      var lastSyncCursor = "{{ forward_cursor }}";
-      function hoshopSyncOrders() {
+    function hoshopSyncOrders() {
         $.post(
             "{{ url_for('ajax.cart.sync_orders') }}",
             {_csrf_token_: "{{ csrf_token() }}", cursor: lastSyncCursor, asc: 1, limit: 10},
@@ -118,8 +140,21 @@
 
             }
         );
-      }
+    }
 
+    window.onload = function () {
+        document.getElementById("id-hs-view-orders").className += " active";
+        var msgbox = document.getElementById("hd-new-orders");
+        msgbox.style.display = "none";
+
+        refreshIntervalId = setInterval(hoshopSyncOrders, 10000);
+
+        {% for o in orders %}
+          hoshopColorizeOrderStatusButton({{ o.cartid }}, {{ o.current_status }});
+        {% endfor %}
+
+        //setTimeout("hoshopShowNewOrderAlert();", 2000);
+    };
   </script>
   </body>
 </html>

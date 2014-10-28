@@ -7,25 +7,40 @@ from ..models import (
     cart as _cart,
     good as _good,
     contact as _contact,
-    objects,
 )
 
 from .dtos import HoShopDTO
 
 
-def add_good(cartid, goodid):
-    # TODO: check permission
-    good = _good.get_good(goodid)
-    ok = _cart.add_good(cartid, goodid, good.price) == 1
+def _validate_cart_op(userid, cartid):
+    cart = _cart.get_cart(cartid)
+    if not cart:
+        return None, HoShopDTO(error='cart not found')
 
+    if int(userid) != cart.userid:
+        return None, HoShopDTO(error='forbidden')
+
+    return cart, None
+
+
+def add_good(userid, cartid, goodid):
+    good = _good.get_good(goodid)
+    cart, err = _validate_cart_op(userid, cartid)
+    if err:
+        return err
+
+    ok = _cart.add_good(cartid, goodid, good.price) == 1
     if ok:
-        return HoShopDTO(data='')
+        return HoShopDTO()
 
     return HoShopDTO(error='can not add good to cart')
 
 
-def delete_good(cartid, goodid):
-    # TODO: check permission
+def delete_good(userid, cartid, goodid):
+    cart, err = _validate_cart_op(userid, cartid)
+    if err:
+        return err
+
     ok = _cart.delete_good(cartid, goodid)
     if ok:
         return HoShopDTO(data='')
@@ -38,52 +53,59 @@ def create_cart(userid):
     return HoShopDTO(data={'cartid': cartid})
 
 
-def get_cart(cartid):
-    # TODO: check permission
-    cart = _cart.get_cart(cartid)
-    return HoShopDTO(data=objects.object_to_dict(cart))
+def get_cart(userid, cartid):
+    cart, err = _validate_cart_op(userid, cartid)
+    if err:
+        return err
+
+    if cart:
+        return HoShopDTO(data=cart.dictify())
+    return HoShopDTO(error='no cart')
 
 
-def get_cart_details(cartid):
-    # TODO: check permission
-    cart = objects.object_to_dict(_cart.get_cart(cartid))
+def get_cart_details(userid, cartid):
+    cart, err = _validate_cart_op(userid, cartid)
+    if err:
+        return err
+
+    cart = cart.dictify()
 
     goodlist = _cart.get_goodlist(cartid)
     cart['goodlist'] = []
     for g in goodlist:
-        gdict = objects.object_to_dict(g)
+        gdict = g.dictify()
         gdict['name'] = _good.get_good(g.goodid).name
         cart['goodlist'].append(gdict)
 
     return HoShopDTO(data=cart)
 
 
-def submit_order(userid, cartid, contactid=None, address=None):
+def submit_order(userid, cartid, address=None, set_default=False):
     cart = _cart.get_cart(cartid)
 
     if int(userid) != cart.userid:
         return HoShopDTO(error=u"无权限提交订单")
 
-    if contactid:
-        contact = _contact.get_contact(contactid)
-    else:
-        contactid = _contact.create_contact(userid, address=address)
+    contactid = _contact.create_contact(userid, address=address)
+    if set_default:
+        _contact.set_default_contact(userid, contactid)
 
     _cart.create_order(cartid, contactid)
     return HoShopDTO()
 
 
 def _get_order_details(order):
-    od = objects.object_to_dict(order)
+    od = order.dictify()
     od['goodlist'] = []
-    contact = objects.object_to_dict(_contact.get_contact(order.contactid))
+    contact = _contact.get_contact(order.contactid).dictify()
     status = _cart.find_order_status(order.cartid)
     goodlist = _cart.get_goodlist(order.cartid)
     for g in goodlist:
-        gdict = objects.object_to_dict(g)
+        gdict = g.dictify()
         gdict['name'] = _good.get_good(g.goodid).name
         od['goodlist'].append(gdict)
-    od['status'] = [objects.object_to_dict(i) for i in status]
+    od['current_status'] = od.pop('status')
+    od['status'] = [i.dictify() for i in status]
     od['contact'] = contact
     return od
 
@@ -99,7 +121,8 @@ def list_orders(userid):
 
 
 def sync_orders(cursor=None, limit=10, asc=False):
-    # TODO: check permission
+    # admin only
+
     if not cursor:
         cursor = None
     else:
@@ -115,4 +138,15 @@ def sync_orders(cursor=None, limit=10, asc=False):
 
     return HoShopDTO(data=result)
 
+
+def update_order(userid, orderid, status, comment):
+    # admin only
+
+
+    status = int(status)
+    ok = _cart.update_order_status(orderid, status, userid, comment) == 1
+    if ok:
+        return HoShopDTO()
+
+    return HoShopDTO(error=u'更新订单失败')
 

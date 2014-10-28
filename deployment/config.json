@@ -6,6 +6,8 @@
 
     "SERVER_SIGNATURE_KEY": "_your_login_url_signatrue_key_",
 
-    "DB_FILE": "sqlite:////data/db/hoshop.db"
+    "DB_FILE": "sqlite:////data/db/hoshop.db",
+
+    "SERVER_PASSWORD_KEY": "_your_password_encrypt_key_"
 
 }

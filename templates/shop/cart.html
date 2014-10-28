@@ -5,9 +5,11 @@
   </head>
   <body>
 
+    {% with title="购物车" %}
+    {% include 'shop/nav_back.html' %}
+    {% endwith %}
+
     <div class="container">
-
-
     <table class="table table-bordered">
         <thead>
             <tr class="row">
@@ -38,34 +40,73 @@
         {% endfor %}
         </tbody>
     </table>
-
-    <form action="{{ url_for('shop.submit_order') }}" method="POST" role="form">
+    {% if cart.count > 0%}
+    <form action="{{ url_for('shop.submit_order') }}" method="POST" role="form" onsubmit="return hsValidateSubmitOrderForm();">
     <table class="table table-bordered">
         <thead>
             <tr class="row"><th colspan="3">订单信息</th></tr>
         </thead>
         <tbody>
         <tr class="row">
-            <td class="col-xs-4">送达地址：</td>
-            <td class="col-xs-4"><input name="address" type="text" class="form-control" placeholder="请输入宿舍号"></td>
-            <td class="col-xs-4"><div class="checkbox" style="margin:0"><label><input type="checkbox" class="form-contrl">记住宿舍</label></div></td>
+            <td class="col-xs-2">送达地址：</td>
+            <td class="col-xs-8">
+
+                <div class="input-group">
+                    <input name="address" type="text" id="id-hs-address" class="form-control" placeholder="请输入宿舍号"
+                            {% if default_contact %} value="{{ default_contact.address }}" {% endif %}
+                            >
+                    <span class="input-group-btn btn-group">
+                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown"><span class="caret"></span></button>
+                        <ul class="dropdown-menu" role="menu">
+                            {% for c in contacts %}
+                            <li><a onclick="hsSelectAddress(this)">{{ c.address }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </span>
+                </div>
+            </td>
+            <td class="col-xs-2">
+                <div class="checkbox">
+                    <label><input name="setdefault" type="checkbox" checked class="form-contrl">设为默认</label></div></td>
         </tr>
         <tr class="row">
-            <td class="col-xs-4">支付方式：</td>
-            <td class="col-xs-8" colspan="2">现金支付</td>
+            <td class="col-xs-2">支付方式：</td>
+            <td class="col-xs-10" colspan="2">现金支付</td>
         </tr>
         </tbody>
     </table>
 
-    <div>
+    <div class="row">
         <input type="hidden" name="_csrf_token_" value="{{ csrf_token() }}">
-        <button class="btn btn-primary" type="submit">确定下单</button>
+        <button class="btn btn-primary btn-lg pull-right" type="submit">确定下单</button>
     </div>
     </form>
+
+    {% else%}
+        <div class="alert alert-info" role="alert">
+            <em>你还没有选择任何商品呢！</em>
+            <a class="btn btn-default" href="{{ url_for('shop.list_goods') }}">立刻去选购</a></div>
+    {% endif %}
     </div>
 
   {% include 'footer.html' %}
 
+  <script>
+      function hsValidateSubmitOrderForm() {
+          var address = document.getElementById("id-hs-address");
+          if (!address.value) {
+              alert("请输入宿舍地址");
+              return false;
+          }
+
+          return true;
+      }
+
+      function hsSelectAddress(a) {
+          var address = document.getElementById("id-hs-address");
+          address.value = a.innerHTML;
+      }
+  </script>
   </body>
 </html>
 

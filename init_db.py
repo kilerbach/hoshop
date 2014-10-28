@@ -7,7 +7,7 @@ Author: ilcwd
 
 import wsgiapp
 
-from hoshop.models.db import Base, engine
+from hoshop.models._db import Base, engine
 
 
 def main():

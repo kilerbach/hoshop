@@ -29,33 +29,13 @@ DEPLOYMENT_CONFIGS = [
     # add more
 ]
 
-
-# deploy hosts
-@task
-def dev():
-    env.hosts = [
-        '10.0.3.1',
-    ]
-
-
 @task
 def production():
     env.hosts = [
-        '10.0.2.1',
-        '10.0.2.2',
-        '10.0.2.3',
+        'root@182.92.107.122',
     ]
 
 
-@task
-def pre():
-    env.hosts = [
-        '10.0.2.4',
-    ]
-
-
-
-# deploy user
 env.user = 'chenwenda'
 
 
@@ -63,7 +43,7 @@ env.user = 'chenwenda'
 LOCAL_CWD = os.getcwd()
 LOCAL_TEMP = os.path.join(LOCAL_CWD, 'temp_pack')
 TAR_NAME = "%s.%s.tar" % (PROJECT_NAME, datetime.datetime.now().strftime("%Y%m%d"),)
-LOCAL_TAR_PATH = os.path.join(LOCAL_TEMP, TAR_NAME)
+LOCAL_TAR_PATH = os.path.join(LOCAL_CWD, TAR_NAME)
 REMOTE_TOUCH_RELOAD = '/data/apps/run/uwsgi_%s.reload' % PROJECT_NAME
 REMOTE_PROJECT_PATH = os.path.join('/data/apps/', PROJECT_NAME)
 REMOTE_APP_CURRENT_PATH = os.path.join(REMOTE_PROJECT_PATH, 'current')
@@ -132,9 +112,9 @@ def deploy():
     local("tar -czvf %s *" % (TAR_NAME, ))
 
     # 2. upload and extract source code
+    sudo("mkdir -p %s" % REMOTE_APP_REAL_PATH)
     put(LOCAL_TAR_PATH, REMOTE_TAR_PATH, use_sudo=True, mirror_local_mode=True)
 
-    sudo("mkdir %s" % REMOTE_APP_REAL_PATH)
     with cd(REMOTE_PROJECT_PATH):
         sudo('mv %s %s' % (TAR_NAME, REMOTE_APP_REAL_PATH))
 

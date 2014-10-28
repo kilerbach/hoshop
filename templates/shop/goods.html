@@ -3,47 +3,58 @@
   <head>
     {% include 'header.html' %}
   </head>
-  <body>
+  <body class="body-with-cart">
+
+    {% include 'shop/nav.html' %}
 
     <div class="container">
 
     {% for c in catalogs %}
-        <div class="row">
-            <div style="background-color:#0AF">
+        <div class="panel panel-info">
+            <div class="panel-heading">
                 {{ c.name }}
             </div>
-        </div>
-        {% for g in goods %}
-        {% if g.catalogid == c.catalogid %}
-        <div class="row" style="padding:10px">
-            <div class="col-xs-8"><p>{{ g.name }}</p></div>
-            <div class="col-xs-4">
-                <button class="btn btn-primary" onclick="addToCart({{ g.goodid }})">￥{{ g.price/1000 }}</button>
+            <ul class="list-group">
+            {% for g in goods %}
+            {% if g.catalogid == c.catalogid %}
+            <li class="list-group-item">
+            <div class="row">
+                <div class="col-xs-4"><p>{{ g.name }}</p></div>
+                <div class="col-xs-4 cl-hs-good-numberbar" id="id-hs-good-numberbar-{{ g.goodid }}">
+                    <span class="btn btn-primary" onclick="deleteFromCart({{ g.goodid }})">—</span>
+                    <span class="btn btn-default" id="id-hs-good-number-{{ g.goodid }}" disabled>0</span>
+                </div>
+                <div class="col-xs-4">
+                    <button class="btn btn-primary" onclick="addToCart({{ g.goodid }})">￥{{ g.price/1000 }}</button>
+                </div>
             </div>
+            </li>
+            {% endif %}
+            {% endfor %}
+            </ul>
         </div>
-        {% endif %}
-        {% endfor %}
     {% endfor %}
 
     </div>
 
-  <div id="hd-cart">
-      <span id="hd-cart-logo"></span>
-      <div id="hd-cart-summery">
-          <span id="hd-cart-count">N/A</span>件商品，共
-          <span id="hd-cart-bill">N/A</span>元
-      </div>
-      <div>
-          <a class="btn btn-primary" id="hd-cart-submit" href="{{ url_for('shop.show_cart') }}">去结算</a>
-      </div>
-  </div>
+    <div id="hd-cart" class="footer">
+        <div class="container">
+            <div class="row">
+                <span class="glyphicon glyphicon-shopping-cart"></span>
+                <span id="hd-cart-count">N/A</span>件商品，共
+                <span id="hd-cart-bill">N/A</span>元
+                <button class="btn btn-warning"  id="hd-cart-submit"
+                        onclick="document.location = '{{ url_for('shop.get_cart') }}'">去结算</button>
+            </div>
+        </div>
+    </div>
 
   {% include 'footer.html' %}
 
   <script>
     function flushCart() {
         $.post(
-          "/ajax/cart",
+          "{{ url_for('ajax.cart.get_cart') }}",
           {_csrf_token_: "{{ csrf_token() }}"},
           function (data, textStatus){
 
@@ -54,14 +65,38 @@
 
             var count = document.getElementById("hd-cart-count");
             var bill = document.getElementById("hd-cart-bill");
+            var submitbutton = document.getElementById("hd-cart-submit");
+            if (data.data.count > 0) {
+                submitbutton.disabled = false;
+                submitbutton.innerHTML = "去结算";
+            } else {
+                submitbutton.innerHTML = "还没买东西哦";
+                submitbutton.disabled = true;
+            }
             count.innerHTML = data.data.count;
             bill.innerHTML = data.data.bill/1000;
+
+            var i;
+            var bars = document.getElementsByClassName("cl-hs-good-numberbar");
+            for (i=0; i<bars.length; i++)  {
+                bars[i].style.visibility = 'hidden';
+
+            }
+            $.each(data.data.goodlist, function() {
+                if (this.count < 1) {
+                    return
+                }
+                var bar = document.getElementById("id-hs-good-numberbar-" + this.goodid);
+                bar.style.visibility = 'visible';
+                var num = document.getElementById("id-hs-good-number-" + this.goodid);
+                num.innerHTML = this.count;
+            });
       });
-    };
+    }
 
     function addToCart(goodid) {
         $.post(
-          "{{ url_for("ajax.cart.add_good_to_cart") }}",
+          "{{ url_for('ajax.cart.add_good_to_cart') }}",
           {_csrf_token_: "{{ csrf_token() }}", goodid: goodid},
           function (data, textStatus){
 
@@ -73,7 +108,21 @@
       });
     }
 
-    document.ready = function () {
+    function deleteFromCart(goodid) {
+        $.post(
+          "{{ url_for('ajax.cart.delete_good_from_cart') }}",
+          {_csrf_token_: "{{ csrf_token() }}", goodid: goodid},
+          function (data, textStatus){
+
+            if (data.status != 0) {
+                alert(data.error);
+                return;
+            }
+            flushCart();
+      });
+    }
+
+    window.onload = function () {
         flushCart();
     };
   </script>

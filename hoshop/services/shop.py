@@ -51,11 +51,44 @@ def encode_price(price):
 
 
 def get_primary_contact(userid):
-    cs = _contact.find_contacts(userid)
-    for i in cs:
-        if i.is_primary:
-            return HoShopDTO(data=i)
+    c = _contact.get_default_contact(userid)
+    if c:
+        return HoShopDTO(data=c)
     return HoShopDTO(error="not found")
+
+
+def set_primary_contact(userid, contactid):
+    c = _contact.get_contact(contactid)
+    if not c:
+        return HoShopDTO(error="contact not found")
+
+    ok = _contact.set_default_contact(userid, contactid) == 1
+    if ok:
+        return HoShopDTO()
+
+    return HoShopDTO(error="set primary contact fail")
+
+
+def find_contacts(userid):
+    cs = _contact.find_contacts(userid)
+    r = {'contacts': cs, 'default': None}
+    if cs:
+        r['default'] = _contact.get_default_contact(userid)
+    return HoShopDTO(data=r)
+
+
+def delete_contact(userid, contactid):
+    if _contact.delete_contact(userid, contactid):
+        return HoShopDTO()
+
+    return HoShopDTO(error='delete contact fail')
+
+
+def set_primary_contact(userid, contactid):
+    if _contact.set_default_contact(userid, contactid):
+        return HoShopDTO()
+
+    return HoShopDTO(error='update contact fail')
 
 
 def create_good(name, price, catalog, total=99999999, description='', start_time=None, expired_time=None):

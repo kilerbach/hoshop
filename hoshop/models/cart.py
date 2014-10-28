@@ -3,39 +3,44 @@
 
 Author: ilcwd
 """
-from . import db
-from .objects import Cart, CartList, OrderStatus, now
+from . import _db
+from ._objects import Cart, CartList, OrderStatus, now
 from hoshop.core import (
     misc,
     spy_logger,
+    contants,
 )
 
 
 @misc.log_costtime(spy_logger)
 def create_cart(userid):
     cart = Cart(userid=userid, is_commit=False, bill=0, count=0,
-                status=Cart.STATUS.UNSET, contactid=0)
-    sess = db.DBSession()
+                status=contants.ORDER_STATUS.UNSET, contactid=0)
+    sess = _db.get_session()
     sess.add(cart)
-    sess.commit()
+    sess.flush()
     return cart.cartid
 
 
 @misc.log_costtime(spy_logger)
 def get_cart(cartid):
-    sess = db.DBSession()
-    return sess.query(Cart).filter(Cart.cartid == cartid).one()
+    sess = _db.get_session()
+    cart = sess.query(Cart).filter(Cart.cartid == cartid).all()
+    if cart:
+        return cart[0]
+
+    return None
 
 
 @misc.log_costtime(spy_logger)
 def get_goodlist(cartid):
-    sess = db.DBSession()
+    sess = _db.get_session()
     return sess.query(CartList).filter(CartList.cartid == cartid).all()
 
 
 @misc.log_costtime(spy_logger)
 def delete_good(cartid, goodid):
-    sess = db.DBSession()
+    sess = _db.get_session()
 
     cart = sess.query(Cart).filter(Cart.cartid == cartid).filter(Cart.is_commit == False).one()
 
@@ -56,13 +61,13 @@ def delete_good(cartid, goodid):
     cart.bill -= goodlist.price
     sess.add(cart)
 
-    sess.commit()
+    sess.flush()
     return 1
 
 
 @misc.log_costtime(spy_logger)
 def add_good(cartid, goodid, price, discount=100, comment=''):
-    sess = db.DBSession()
+    sess = _db.get_session()
 
     cart = sess.query(Cart).filter(Cart.cartid == cartid).filter(Cart.is_commit == False).one()
 
@@ -82,7 +87,7 @@ def add_good(cartid, goodid, price, discount=100, comment=''):
     cart.bill += price
     sess.add(cart)
 
-    sess.commit()
+    sess.flush()
     return 1
 
 
@@ -91,53 +96,56 @@ def create_order(cartid, contactid):
     if not contactid:
         return 0
 
-    sess = db.DBSession()
+    sess = _db.get_session()
     cart = sess.query(Cart).filter(Cart.cartid == cartid).one()
     if cart.is_commit:
         return 0
 
     orderstatus = OrderStatus(orderid=cartid, modified_userid=cart.userid,
-                              to_status=Cart.STATUS.START, from_status=cart.status,
+                              to_status=contants.ORDER_STATUS.START, from_status=cart.status,
                               comment='')
 
     cart.contactid = contactid
     cart.is_commit = True
-    cart.status = Cart.STATUS.START
+    cart.status = contants.ORDER_STATUS.START
     cart.modified_time = now()
     sess.add(cart)
     sess.add(orderstatus)
-    sess.commit()
+    sess.flush()
     return cart
 
 
 @misc.log_costtime(spy_logger)
-def update_order_status(orderid, to_status, userid, comment):
-    sess = db.DBSession()
+def update_order_status(orderid, from_status, to_status, userid, comment):
+    if contants.ORDER_STATUS.has_value(to_status):
+        return 0
+
+    sess = _db.get_session()
     order = sess.query(Cart).filter(Cart.cartid == orderid).one()
     if not order.is_commit:
         return 0
 
-    orderstatus = OrderStatus(orderid=orderid, modified_user=userid,
+    orderstatus = OrderStatus(orderid=orderid, modified_userid=userid,
                               to_status=to_status, from_status=order.status,
                               comment=comment)
     order.status = to_status
     order.modified_time = now()
     sess.add(order)
     sess.add(orderstatus)
-    sess.commit()
+    sess.flush()
     return 1
 
 
 @misc.log_costtime(spy_logger)
 def find_orders(userid):
-    sess = db.DBSession()
+    sess = _db.get_session()
     carts = sess.query(Cart).filter(Cart.userid == userid).filter(Cart.is_commit == True).all()
     return carts
 
 
 @misc.log_costtime(spy_logger)
 def find_order_status(orderid):
-    sess = db.DBSession()
+    sess = _db.get_session()
     return sess.query(OrderStatus).filter(OrderStatus.orderid == orderid).all()
 
 
@@ -149,7 +157,7 @@ def find_orders_incrementally(orderid=None, limit=10, asc=True):
         else:
             orderid = 0xFFFFFFFF
 
-    sess = db.DBSession()
+    sess = _db.get_session()
     if asc:
         orders = sess.query(Cart).filter(Cart.cartid > orderid).filter(Cart.is_commit == True).limit(limit).all()
     else:

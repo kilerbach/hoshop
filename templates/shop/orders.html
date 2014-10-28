@@ -5,9 +5,11 @@
   </head>
   <body>
 
+    {% with title="订单状态" %}
+    {% include 'shop/nav_back.html' %}
+    {% endwith %}
+
     <div class="container">
-
-
     {% for order in orders %}
     <div class="hd-user-order">
     <table class="table table-hover">

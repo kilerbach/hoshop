@@ -35,6 +35,8 @@ class C(object):
 
     SERVER_SESSION_KEY = None
 
+    SERVER_PASSWORD_KEY = None
+
     @classmethod
     def load_config(cls, config_file):
         with open(config_file, 'r') as f:

@@ -5,8 +5,8 @@ Author: ilcwd
 """
 import datetime
 
-from . import db
-from .objects import Good
+from . import _db
+from ._objects import Good
 
 CATALOG_ROOT = 0
 
@@ -36,17 +36,16 @@ def create_good(name, price, catalogid, total=99999999, description='', start_ti
         expired_time=expired_time,
     )
 
-    with db.create_session() as sess:
-        sess.add(good)
+    _db.get_session().add(good)
 
     return 1
 
 
 def find_goods():
-    sess = db.DBSession()
+    sess = _db.get_session()
     return sess.query(Good).all()
 
 
 def get_good(goodid):
-    sess = db.DBSession()
+    sess = _db.get_session()
     return sess.query(Good).filter(Good.goodid == goodid).one()

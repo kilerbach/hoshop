@@ -24,18 +24,32 @@ def create_cart():
 @app.route('/cart', methods=['GET', 'POST'])
 def get_cart():
     cartid = flask.session['cartid']
-    r = cart.get_cart(cartid)
+    userid = flask.session['userid']
+    r = cart.get_cart_details(userid, cartid)
     if r.ok():
         return util.render_data(r.data)
 
     return util.render_error(u"找不到购物车")
 
 
-@app.route('/cart/addgood', methods=['GET', 'POST'])
+@app.route('/cart/deletegood', methods=['POST'])
+def delete_good_from_cart():
+    cartid = flask.session['cartid']
+    userid = flask.session['userid']
+    goodid = flask.request.form['goodid']
+    r = cart.delete_good(userid, cartid, goodid)
+    if r.ok():
+        return util.render_data(r.data)
+
+    return util.render_error(r.error)
+
+
+@app.route('/cart/addgood', methods=['POST'])
 def add_good_to_cart():
     cartid = flask.session['cartid']
+    userid = flask.session['userid']
     goodid = flask.request.form['goodid']
-    r = cart.add_good(cartid, goodid)
+    r = cart.add_good(userid, cartid, goodid)
     if r.ok():
         return util.render_data(r.data)
 
@@ -52,3 +66,13 @@ def sync_orders():
         return util.render_data(r.data)
 
     return util.render_error(r.error)
+
+
+@app.route('/order/update', methods=['POST'])
+def update_order():
+    userid = flask.session['userid']
+    orderid = flask.request.form['orderid']
+    status = flask.request.form['status']
+
+    r = cart.update_order(userid, orderid, status, '')
+    return util.render_dto(r)
