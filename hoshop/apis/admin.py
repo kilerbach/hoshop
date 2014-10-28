@@ -6,7 +6,7 @@ Author: ilcwd
 import flask
 
 from ..services import cart
-from . import util
+from . import _util
 
 
 app = flask.Blueprint('ajax.admin', __name__)
@@ -20,4 +20,4 @@ def update_orders():
     comment = flask.request.form.get('comment')
     r = cart.update_order(userid, orderid, status, comment)
 
-    return util.render_dto(r)
+    return _util.render_dto(r)

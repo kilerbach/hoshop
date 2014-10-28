@@ -6,7 +6,7 @@ Author: ilcwd
 import flask
 
 from ..services import shop
-from . import util
+from . import _util
 
 
 app = flask.Blueprint('ajax.catalog', __name__)
@@ -17,8 +17,8 @@ def create_catalog():
     name = flask.request.form['name']
     ok = shop.create_catalog(name)
     if ok:
-        return util.render_data()
+        return _util.render_data()
 
-    return util.render_error(u"创建失败")
+    return _util.render_error(u"创建失败")
 
 
