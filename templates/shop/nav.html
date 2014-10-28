@@ -14,7 +14,7 @@
             <li><a href="{{ url_for('user.user_info') }}">个人中心</a></li>
             <li><a href="{{ url_for('shop.list_orders') }}">追踪订单</a></li>
             <li><a href="#">回到主页</a></li>
-            {% if session.get('user.role') == user_role.ADMIN %}
+            {% if session.get(session_userrole_key) == user_role.ADMIN %}
             <li><a href="{{ url_for('admin.list_orders') }}">回到商品管理页面</a></li>
             {% endif %}
         </ul>

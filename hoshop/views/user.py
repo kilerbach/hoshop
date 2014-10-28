@@ -8,6 +8,7 @@ import flask
 from ..services import shop as _shop
 from ..services import user as _user
 from ..core import TEMPLATE_ROOT
+from ..core import contants
 
 app = flask.Blueprint('user', __name__, template_folder=TEMPLATE_ROOT)
 
@@ -39,6 +40,21 @@ def set_default_contact():
     contactid = flask.request.form['contactid']
     _shop.set_primary_contact(userid, contactid)
     return flask.redirect(flask.url_for('user.user_info'))
+
+
+@app.route('/hodaologin')
+def hodao_login():
+    s = flask.request.values['s']
+    t = flask.request.values['t']
+    u = flask.request.values['u']
+    next = flask.request.values.get('next')
+    r = _user.hodao_login(u, s, t)
+    if r.ok():
+        if next:
+            return flask.redirect(next)
+        return flask.redirect('shop.list_goods')
+
+    return flask.redirect('user.login')
 
 
 @app.route('/login', methods=['GET'])

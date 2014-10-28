@@ -34,7 +34,8 @@ class C(object):
     DB_FILE = None
 
     SERVER_SESSION_KEY = None
-
+    SERVER_SIGNATURE_KEY = None
+    LOGIN_URL_EXPIRES = None
     SERVER_PASSWORD_KEY = None
 
     @classmethod

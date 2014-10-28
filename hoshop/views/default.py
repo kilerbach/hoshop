@@ -27,6 +27,9 @@ def inject_values():
     return dict(
         order_status_mapping=contants.ORDER_STATUS_MAPPING,
         user_role=contants.USER_ROLE,
+        csrf_token_key=CSRF_TOKEN_KEY,
+        csrf_token=generate_csrf_token,
+        session_userrole_key=SESSION_USERROLE,
     )
 
 
@@ -111,6 +114,3 @@ def generate_csrf_token():
     if CSRF_TOKEN_KEY not in session:
         session[CSRF_TOKEN_KEY] = uuid.uuid4().hex
     return session[CSRF_TOKEN_KEY]
-
-
-application.jinja_env.globals['csrf_token'] = generate_csrf_token

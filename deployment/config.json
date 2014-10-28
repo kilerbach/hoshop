@@ -8,6 +8,7 @@
 
     "DB_FILE": "sqlite:////data/db/hoshop.db",
 
-    "SERVER_PASSWORD_KEY": "_your_password_encrypt_key_"
+    "SERVER_PASSWORD_KEY": "_your_password_encrypt_key_",
 
+    "LOGIN_URL_EXPIRES": 600000
 }
