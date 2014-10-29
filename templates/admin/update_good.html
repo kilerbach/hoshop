@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-hans">
+  <head>
+    {% include 'header.html' %}
+  </head>
+  <body>
+
+    {% include 'admin/nav.html' %}
+
+    <div class="container">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>商品名称</th>
+                <th>商品价格</th>
+                <th>商品库存</th>
+                <th>商品描述</th>
+                <th>暂停销售</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for c in catalogs %}
+            <tr class="cl-hs-update-good-category"><td colspan="4">{{ c.name }}</td></tr>
+            {% for g in goods %}
+            {% if g.catalogid == c.catalogid %}
+            <tr>
+                <td>{{ g.name }}</td>
+                <td>￥{{ g.price/1000 }}</td>
+                <td>{{ g.count_total - g.count_sold }}</td>
+                <td>{{ g.description }}</td>
+                <td><button>X</button></td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        {% endfor %}
+        </tbody>
+    </table>
+    {% for c in catalogs %}
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                {{ c.name }}
+            </div>
+            <ul class="list-group">
+            {% for g in goods %}
+            {% if g.catalogid == c.catalogid %}
+            <li class="list-group-item">
+            <div class="row">
+                <div class="col-xs-4"><p>{{ g.name }}</p></div>
+                <div class="col-xs-4 cl-hs-good-numberbar" id="id-hs-good-numberbar-{{ g.goodid }}">
+                    <span class="btn btn-primary" onclick="deleteFromCart({{ g.goodid }})">—</span>
+                    <span class="btn btn-default" id="id-hs-good-number-{{ g.goodid }}" disabled>0</span>
+                </div>
+                <div class="col-xs-4">
+                    <button class="btn btn-primary" onclick="addToCart({{ g.goodid }})">￥{{ g.price/1000 }}</button>
+                </div>
+            </div>
+            </li>
+            {% endif %}
+            {% endfor %}
+            </ul>
+        </div>
+    {% endfor %}
+
+    </div>
+
+  {% include 'footer.html' %}
+  <script>
+
+  </script>
+  </body>
+</html>
+

@@ -9,7 +9,8 @@ import wsgiapp
 
 from hoshop.models._db import db
 from hoshop.models import good, catalog, cart, contact
-from hoshop.models._objects import object_to_dict
+
+from hoshop.services import user
 
 from Crypto.Cipher import AES
 import os
@@ -17,7 +18,9 @@ import hashlib
 
 def main():
 
-    pass
+    print user.hodao_login('publicuser', '', '').data
+
+    db.session.commit()
 
 if __name__ == '__main__':
     main()

@@ -8,11 +8,10 @@
 # 
 
 class Enum(object):
-
     @classmethod
     def has_value(cls, value):
         for k, v in cls.__dict__.iteritems():
-            if k.startswith('_') or isinstance(v, int):
+            if k.startswith('_') or not isinstance(v, int):
                 continue
 
             if v == value:
@@ -61,7 +60,6 @@ ORDER_STATUS_MAPPING = {
     ORDER_STATUS.CANCEL: u"取消",
 }
 
-
 ORDER_UPDATE_USER_RULES = {
     USER_ROLE.ADMIN: {
         ORDER_STATUS.START: (ORDER_STATUS.CONFIRM, ORDER_STATUS.SHIPING, ORDER_STATUS.SUCCESS, ORDER_STATUS.CANCEL),
@@ -75,6 +73,9 @@ ORDER_UPDATE_USER_RULES = {
         ORDER_STATUS.SHIPING: ORDER_STATUS.SUCCESS,
     }
 }
+
+
+GOOD_EDITABLE_COLUMNS = {'name', 'price', 'count_total', 'count_left', 'expired_time', 'description', 'catalogid'}
 
 
 def can_change_status(userrole, from_status, to_status):

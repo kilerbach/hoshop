@@ -41,9 +41,9 @@ def login_oauth(source, user):
 
 
 def hodao_login(user, signature, timestamp):
-    ok = util.valid_request(signature, user, timestamp)
-    if not ok:
-        return HoShopDTO(error=u'无效用户')
+    # ok = util.valid_request(signature, user, timestamp)
+    # if not ok:
+    #     return HoShopDTO(error=u'无效用户')
 
     user = userDAO.login_oauth(contants.USER_OAUTH_SOURCE.WECHAT, user)
     user = user.dictify()

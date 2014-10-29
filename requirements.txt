@@ -4,3 +4,4 @@ Jinja2
 Flask
 PyYAML
 sqlalchemy
+pycrypto

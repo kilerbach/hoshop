@@ -9,52 +9,47 @@
 
     <div class="container">
 
-    {% for order in orders %}
-    <div class="hd-user-order">
-        <table class="table table-hover">
-            <thead>
-                <tr class="row">
-                    <th class="col-xs-4">{{ order.modified_time }}</th>
-                    <th class="col-xs-1">单价</th>
-                    <th class="col-xs-1">送达地址</th>
-                    <th class="col-xs-1">总价</th>
-                    <th class="col-xs-5">订单状态</th>
-                </tr>
-            </thead>
-            <tbody>
-            <tr class="row">
-                <td>
-                {% for g in order.goodlist %}
-                {% for idx in range(g.count) %}
-                    <p>{{ g.name }}</p>
-                {% endfor %}
-                {% endfor %}
-                </td>
-                <td>
-                {% for g in order.goodlist %}
-                {% for idx in range(g.count) %}
-                    <p>￥{{ g.price/1000 }}</p>
-                {% endfor %}
-                {% endfor %}
-                </td>
-                <td rowspan="{{ order.count }}">{{ order.contact.address}}</td>
-                <td rowspan="{{ order.count }}">￥{{ order.bill/1000 }}</td>
-                <td rowspan="{{ order.count }}">
-                    <div class="row hd-update-order-button-row" id="hd-order-status-{{ order.cartid }}" title="{{ order.current_status }}">
-                        {% for i in [10, 20, 30, 40] %}
-                        <button class="btn btn-success" name="{{ i }}" id="hd-order-status-{{ order.cartid }}-{{ i }}"
-                                onclick="hoshopUpdateOrder(this, {{ order.cartid }},{{ i }});">
-                            {{ order_status_mapping[i] }}</button>
-                        {% endfor %}
-                    </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-        <div class="hd-horizontal-line"></div>
-
+    {% for order in orders|sort(reverse=True, attribute='created_time') %}
+    <div class="panel panel-default">
+        <div class="panel-heading ">
+        <div class="row">
+            <div class="col-xs-4">{{ order.created_time.strftime('%Y-%m-%d %H:%M') }}</div>
+            <div class="col-xs-1">单价</div>
+            <div class="col-xs-1">送达地址</div>
+            <div class="col-xs-1">总价</div>
+            <div class="col-xs-5">订单状态</div>
+        </div>
+        </div>
+        <div class="panel-body row">
+            <div class="col-xs-4">
+            {% for g in order.goodlist %}
+            {% for idx in range(g.count) %}
+                <div style="padding-bottom: 5px;">{{ g.name }}</div>
+            {% endfor %}
+            {% endfor %}
+            </div>
+            <div class="col-xs-1">
+            {% for g in order.goodlist %}
+            {% for idx in range(g.count) %}
+                <div style="padding-bottom: 5px;">￥{{ g.price/1000 }}</div>
+            {% endfor %}
+            {% endfor %}
+            </div>
+            <div class="col-xs-1">{{ order.contact.address}}</div>
+            <div class="col-xs-1">￥{{ order.bill/1000 }}</div>
+            <div class="col-xs-5">
+                <div class="hd-update-order-button-row" id="hd-order-status-{{ order.cartid }}" title="{{ order.current_status }}">
+                    {% for i in [10, 20, 30, 40] %}
+                    <button class="btn btn-success" name="{{ i }}" id="hd-order-status-{{ order.cartid }}-{{ i }}"
+                            onclick="hoshopUpdateOrder(this, {{ order.cartid }},{{ i }});">
+                        {{ order_status_mapping[i] }}</button>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
     </div>
     {% endfor %}
+
     <div id="hd-new-orders" class="row alert alert-danger">
       <strong>注意：</strong>有
       <a href="{{ url_for('admin.list_orders') }}" class="alert-link">

@@ -35,6 +35,16 @@ def show_goods():
     ))
 
 
+def update_goods(goodid, **kw):
+    if 'price' in kw:
+        kw['price'] = encode_price(int(kw.pop('price')))
+
+    if _good.update_good(goodid, **kw):
+        return HoShopDTO()
+
+    return HoShopDTO(error=u'更新商品失败')
+
+
 def encode_price(price):
     """
     存储中价格是精确到厘的

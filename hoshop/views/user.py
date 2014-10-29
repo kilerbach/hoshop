@@ -47,14 +47,16 @@ def hodao_login():
     s = flask.request.values['s']
     t = flask.request.values['t']
     u = flask.request.values['u']
-    next = flask.request.values.get('next')
+    next = flask.request.values.get('next', '')
     r = _user.hodao_login(u, s, t)
     if r.ok():
+        flask.session['userid'] = r.data['userid']
+        flask.session['user.role'] = r.data['role']
         if next:
             return flask.redirect(next)
-        return flask.redirect('shop.list_goods')
+        return flask.redirect(flask.url_for('shop.list_goods'))
 
-    return flask.redirect('user.login')
+    return flask.render_template('user/login.html', next=next, error=r.error)
 
 
 @app.route('/login', methods=['GET'])

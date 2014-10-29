@@ -21,6 +21,13 @@ def add_good_view():
                                  catalogs=r.data['catalogs'])
 
 
+@app.route('/good/update')
+@require_admin
+def update_good():
+    r = shop.show_goods()
+    return flask.render_template('admin/update_good.html', goods=r.data['goods'], catalogs=r.data['catalogs'])
+
+
 @app.route('/good/addition', methods=['POST'])
 @require_admin
 def add_good_do():

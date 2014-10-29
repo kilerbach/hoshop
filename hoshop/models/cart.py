@@ -116,8 +116,8 @@ def create_order(cartid, contactid):
 
 
 @misc.log_costtime(spy_logger)
-def update_order_status(orderid, from_status, to_status, userid, comment):
-    if contants.ORDER_STATUS.has_value(to_status):
+def update_order_status(orderid, to_status, userid, comment):
+    if not contants.ORDER_STATUS.has_value(to_status):
         return 0
 
     sess = _db.get_session()

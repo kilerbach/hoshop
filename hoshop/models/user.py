@@ -91,7 +91,7 @@ def _normalize_loginid(loginid):
     return loginid.lower()
 
 
-def login_oauth(source, user):
+def login_oauth(source, openid):
     """
     Login or Create a new OAuth user.
     :param user:
@@ -99,20 +99,21 @@ def login_oauth(source, user):
     :return:
     """
     source = int(source)
-    if source not in contants.USER_OAUTH_SOURCE.ALL:
+    if not contants.USER_OAUTH_SOURCE.has_value(source):
         return None
 
     sess = _db.get_session()
-    u = sess.query(UserOAuth).filter(UserOAuth.source==source).filter(UserOAuth.user==user).one()
-    if not u:
-        user = User(nickname=DEFAULT_NICKNAME, role=User.ROLE.NORMAL, status=User.STATUS.NORMAL, password='')
+    uos = sess.query(UserOAuth).filter(UserOAuth.source==source).filter(UserOAuth.user==openid).all()
+    if not uos:
+        user = User(nickname=DEFAULT_NICKNAME, role=contants.USER_ROLE.NORMAL, status=contants.USER_STATUS.NORMAL, password='')
         sess.add(user)
         sess.flush()
 
-        u = UserOAuth(source=source, user=user, userid=user.userid)
-        sess.add(u)
+        userOAuth = UserOAuth(source=source, user=openid, userid=user.userid)
+        sess.add(userOAuth)
         sess.flush()
     else:
+        u = uos[0]
         user = sess.query(User).filter(User.userid==u.userid).one()
 
     return user
@@ -147,7 +148,7 @@ def get_user(userid):
 
 
 def create_user(logintype, loginid, password, userid=None, role=contants.USER_ROLE.NORMAL, status=contants.USER_STATUS.NORMAL):
-    if not logintype in UserLogin.LOGINTYPE.ALL:
+    if contants.USER_LOGIN_TYPE.has_value(logintype):
         return 0
 
     loginid = _normalize_loginid(loginid)

@@ -91,6 +91,7 @@ def submit_order(userid, cartid, address=None, set_default=False):
         _contact.set_default_contact(userid, contactid)
 
     _cart.create_order(cartid, contactid)
+    # TODO: update goods
     return HoShopDTO()
 
 

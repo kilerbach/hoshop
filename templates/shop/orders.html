@@ -10,9 +10,11 @@
     {% endwith %}
 
     <div class="container">
-    {% for order in orders %}
+    <div class="hd-horizontal-line"></div>
+
+    {% for order in orders|sort(reverse=True, attribute='created_time') %}
     <div class="hd-user-order">
-    <table class="table table-hover">
+    <table class="table table-bordered">
         <thead>
             <tr class="row">
                 <th class="col-xs-8">零食列表</th>
@@ -33,7 +35,7 @@
         </tbody>
     </table>
 
-    <table class="table table-hover">
+    <table class="table table-bordered">
         <thead>
             <tr class="row"><th colspan="3">订单信息</th></tr>
         </thead>
@@ -52,7 +54,7 @@
             {% for s in order.status %}
                 <div class="row">
                     <div class="col-xs-4">{{ s.created_time.strftime("%H:%M") }}</div>
-                    <div class="col-xs-4">{{ order_status_mapping[s.to_status] }}</div>
+                    <div class="col-xs-8">{{ order_status_mapping[s.to_status] }}</div>
                 </div>
             {% endfor %}
             </td>
