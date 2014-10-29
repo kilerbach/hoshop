@@ -8,7 +8,7 @@ import flask
 from ..services import shop as _shop
 from ..services import user as _user
 from ..core import TEMPLATE_ROOT
-from ..core import contants
+from ..core import constants
 
 app = flask.Blueprint('user', __name__, template_folder=TEMPLATE_ROOT)
 

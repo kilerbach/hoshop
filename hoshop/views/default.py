@@ -11,7 +11,7 @@ import functools
 import flask
 from flask import jsonify, request, session, render_template
 
-from hoshop.core import application, contants, misc
+from hoshop.core import application, constants, misc
 from hoshop.services import cart as cartService
 
 _logger = logging.getLogger(__name__)
@@ -25,8 +25,8 @@ SESSION_USERROLE = 'user.role'
 @application.context_processor
 def inject_values():
     return dict(
-        order_status_mapping=contants.ORDER_STATUS_MAPPING,
-        user_role=contants.USER_ROLE,
+        order_status_mapping=constants.ORDER_STATUS_MAPPING,
+        user_role=constants.USER_ROLE,
         csrf_token_key=CSRF_TOKEN_KEY,
         csrf_token=generate_csrf_token,
         session_userrole_key=SESSION_USERROLE,
@@ -50,7 +50,7 @@ def require_admin(func):
     @functools.wraps(func)
     def go(*a, **kw):
         userid = session.get(SESSION_USERID)
-        if not userid or session.get(SESSION_USERROLE) != contants.USER_ROLE.ADMIN:
+        if not userid or session.get(SESSION_USERROLE) != constants.USER_ROLE.ADMIN:
             # TODO: admin require prompt
             return flask.redirect(flask.url_for('user.login', next=request.url))
 

@@ -11,15 +11,15 @@ from Crypto.Cipher import AES
 
 from . import _db
 from ._objects import UserLogin, User, UserOAuth
-from hoshop.core import C, contants
+from hoshop.core import C, constants
 
 
 DEFAULT_NICKNAME = u'登陆用户'
 
 LOGINID_VALID = {
-    contants.USER_LOGIN_TYPE.EMAIL: lambda x: True,
-    contants.USER_LOGIN_TYPE.MOBILE: lambda x: True,
-    contants.USER_LOGIN_TYPE.NAME: lambda x: re.match(r"[a-z]{1}[a-z0-9]{3,10}", x),
+    constants.USER_LOGIN_TYPE.EMAIL: lambda x: True,
+    constants.USER_LOGIN_TYPE.MOBILE: lambda x: True,
+    constants.USER_LOGIN_TYPE.NAME: lambda x: re.match(r"[a-z]{1}[a-z0-9]{3,10}", x),
 }
 
 class PasswordFactory(object):
@@ -99,13 +99,13 @@ def login_oauth(source, openid):
     :return:
     """
     source = int(source)
-    if not contants.USER_OAUTH_SOURCE.has_value(source):
+    if not constants.USER_OAUTH_SOURCE.has_value(source):
         return None
 
     sess = _db.get_session()
     uos = sess.query(UserOAuth).filter(UserOAuth.source==source).filter(UserOAuth.user==openid).all()
     if not uos:
-        user = User(nickname=DEFAULT_NICKNAME, role=contants.USER_ROLE.NORMAL, status=contants.USER_STATUS.NORMAL, password='')
+        user = User(nickname=DEFAULT_NICKNAME, role=constants.USER_ROLE.NORMAL, status=constants.USER_STATUS.NORMAL, password='')
         sess.add(user)
         sess.flush()
 
@@ -147,8 +147,8 @@ def get_user(userid):
     return u
 
 
-def create_user(logintype, loginid, password, userid=None, role=contants.USER_ROLE.NORMAL, status=contants.USER_STATUS.NORMAL):
-    if contants.USER_LOGIN_TYPE.has_value(logintype):
+def create_user(logintype, loginid, password, userid=None, role=constants.USER_ROLE.NORMAL, status=constants.USER_STATUS.NORMAL):
+    if not constants.USER_LOGIN_TYPE.has_value(logintype):
         return 0
 
     loginid = _normalize_loginid(loginid)

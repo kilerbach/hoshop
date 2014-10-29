@@ -8,7 +8,7 @@ import datetime
 from . import _db
 from ._objects import Good, now
 
-from hoshop.core import contants
+from hoshop.core import constants
 
 CATALOG_ROOT = 0
 
@@ -27,7 +27,7 @@ def update_good(goodid, **kw):
     sess = _db.get_session()
     good = sess.query(Good).filter(Good.goodid==goodid).one()
     for k, v in kw.iteritems():
-        if k in contants.GOOD_EDITABLE_COLUMNS:
+        if k in constants.GOOD_EDITABLE_COLUMNS:
             if k == 'count_left':
                 setattr(good, 'count_total', good.count_sold+int(v))
             if k == 'count_sold_delta':

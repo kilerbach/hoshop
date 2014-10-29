@@ -8,14 +8,14 @@ from ._objects import Cart, CartList, OrderStatus, now
 from hoshop.core import (
     misc,
     spy_logger,
-    contants,
+    constants,
 )
 
 
 @misc.log_costtime(spy_logger)
 def create_cart(userid):
     cart = Cart(userid=userid, is_commit=False, bill=0, count=0,
-                status=contants.ORDER_STATUS.UNSET, contactid=0)
+                status=constants.ORDER_STATUS.UNSET, contactid=0)
     sess = _db.get_session()
     sess.add(cart)
     sess.flush()
@@ -102,12 +102,12 @@ def create_order(cartid, contactid):
         return 0
 
     orderstatus = OrderStatus(orderid=cartid, modified_userid=cart.userid,
-                              to_status=contants.ORDER_STATUS.START, from_status=cart.status,
+                              to_status=constants.ORDER_STATUS.START, from_status=cart.status,
                               comment='')
 
     cart.contactid = contactid
     cart.is_commit = True
-    cart.status = contants.ORDER_STATUS.START
+    cart.status = constants.ORDER_STATUS.START
     cart.modified_time = now()
     sess.add(cart)
     sess.add(orderstatus)
@@ -117,7 +117,7 @@ def create_order(cartid, contactid):
 
 @misc.log_costtime(spy_logger)
 def update_order_status(orderid, to_status, userid, comment):
-    if not contants.ORDER_STATUS.has_value(to_status):
+    if not constants.ORDER_STATUS.has_value(to_status):
         return 0
 
     sess = _db.get_session()

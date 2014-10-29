@@ -9,7 +9,7 @@ import wsgiapp
 
 from hoshop.models._db import db
 from hoshop.models import good, catalog, user
-from hoshop.core import contants
+from hoshop.core import constants
 
 def main():
     def h(p):
@@ -35,8 +35,8 @@ def main():
 
     good.create_good(u"威化饼", 5500, 4)
 
-    user.create_user(contants.USER_LOGIN_TYPE.NAME, 'admin', h('111111'), role=contants.USER_ROLE.ADMIN)
-    user.create_user(contants.USER_LOGIN_TYPE.NAME, 'test', h('111111'), role=contants.USER_ROLE.NORMAL)
+    print user.create_user(constants.USER_LOGIN_TYPE.NAME, 'admin', h('111111'), role=constants.USER_ROLE.ADMIN)
+    print user.create_user(constants.USER_LOGIN_TYPE.NAME, 'test', h('111111'), role=constants.USER_ROLE.NORMAL)
 
     db.session.commit()
 

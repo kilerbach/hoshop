@@ -10,7 +10,7 @@
 from ..models import user as userDAO
 from .dtos import HoShopDTO
 from . import util
-from hoshop.core import contants
+from hoshop.core import constants
 
 def login(logintype, loginid, password):
 
@@ -45,7 +45,7 @@ def hodao_login(user, signature, timestamp):
     # if not ok:
     #     return HoShopDTO(error=u'无效用户')
 
-    user = userDAO.login_oauth(contants.USER_OAUTH_SOURCE.WECHAT, user)
+    user = userDAO.login_oauth(constants.USER_OAUTH_SOURCE.WECHAT, user)
     user = user.dictify()
     user.pop('password')
     return HoShopDTO(data=user)
