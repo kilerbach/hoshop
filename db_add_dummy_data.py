@@ -24,6 +24,7 @@ def main():
     catalog.create_catalog(u"零食")
 
     good.create_good(u"可乐350ml", 3500, 1)
+    good.create_good(u"冰红茶300ml", 2500, 1, total=9)
     good.create_good(u"雪碧350ml", 3000, 1)
 
     good.create_good(u"黑曼", 10000, 2)
