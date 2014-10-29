@@ -53,7 +53,7 @@
             <td>
             {% for s in order.status %}
                 <div class="row">
-                    <div class="col-xs-4">{{ s.created_time.strftime("%H:%M") }}</div>
+                    <div class="col-xs-4">{{ datetime_formatter.only_time(s.created_time) }}</div>
                     <div class="col-xs-8">{{ order_status_mapping[s.to_status] }}</div>
                 </div>
             {% endfor %}

@@ -75,7 +75,7 @@ ORDER_UPDATE_USER_RULES = {
 }
 
 
-GOOD_EDITABLE_COLUMNS = {'name', 'price', 'count_total', 'count_left', 'expired_time', 'description', 'catalogid'}
+GOOD_EDITABLE_COLUMNS = {'name', 'price', 'count_total', 'count_left', 'count_sold_delta', 'expired_time', 'description', 'catalogid'}
 
 
 def can_change_status(userrole, from_status, to_status):

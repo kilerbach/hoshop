@@ -8,6 +8,8 @@ import time
 import functools
 import os
 
+import arrow
+
 __root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
 TEMPLATE_ROOT = os.path.join(__root, 'templates')
@@ -36,3 +38,18 @@ def log_costtime(logger):
 
         return wrapper
     return _d
+
+
+class DatetimeFormatter(object):
+
+    def __init__(self, tz):
+        self.tz = tz
+
+    def _to_local_time(self, d):
+        return arrow.get(d).to(self.tz)
+
+    def precise_datetime(self, d):
+        return self._to_local_time(d).strftime("%Y-%m-%d %H:%M")
+
+    def only_time(self, d):
+        return self._to_local_time(d).strftime("%H:%M")

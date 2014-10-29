@@ -14,7 +14,6 @@ from .exceptions import *
 from .misc import get_template_path, TEMPLATE_ROOT, STATIC_ROOT
 
 # Main application
-print "##", STATIC_ROOT
 application = flask.Flask(__name__, static_folder=STATIC_ROOT)
 
 # logger for RPC time cost.

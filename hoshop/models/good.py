@@ -30,6 +30,8 @@ def update_good(goodid, **kw):
         if k in contants.GOOD_EDITABLE_COLUMNS:
             if k == 'count_left':
                 setattr(good, 'count_total', good.count_sold+int(v))
+            if k == 'count_sold_delta':
+                setattr(good, 'count_sold', good.count_sold+int(v))
             else:
                 setattr(good, k, v)
 
@@ -53,7 +55,6 @@ def create_good(name, price, catalogid, total=99999999, description='', start_ti
     )
 
     _db.get_session().add(good)
-
     return 1
 
 

@@ -13,7 +13,7 @@
     <div class="panel panel-default">
         <div class="panel-heading ">
         <div class="row">
-            <div class="col-xs-4">{{ order.created_time.strftime('%Y-%m-%d %H:%M') }}</div>
+            <div class="col-xs-4">{{ datetime_formatter.precise_datetime(order.created_time) }}</div>
             <div class="col-xs-1">单价</div>
             <div class="col-xs-1">送达地址</div>
             <div class="col-xs-1">总价</div>

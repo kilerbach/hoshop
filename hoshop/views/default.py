@@ -11,7 +11,7 @@ import functools
 import flask
 from flask import jsonify, request, session, render_template
 
-from hoshop.core import application, contants
+from hoshop.core import application, contants, misc
 from hoshop.services import cart as cartService
 
 _logger = logging.getLogger(__name__)
@@ -30,6 +30,7 @@ def inject_values():
         csrf_token_key=CSRF_TOKEN_KEY,
         csrf_token=generate_csrf_token,
         session_userrole_key=SESSION_USERROLE,
+        datetime_formatter=misc.DatetimeFormatter('Asia/Shanghai'),
     )
 
 

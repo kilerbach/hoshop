@@ -91,6 +91,9 @@ def submit_order(userid, cartid, address=None, set_default=False):
         _contact.set_default_contact(userid, contactid)
 
     _cart.create_order(cartid, contactid)
+    goodlist = _cart.get_goodlist(cartid)
+    for g in goodlist:
+        _good.update_good(g.goodid, count_sold_delta=g.count)
     # TODO: update goods
     return HoShopDTO()
 
