@@ -43,7 +43,10 @@
                         <span>{{ g.description }}</span>
                         <span class="label label-info cl-hs-good-editable-prompt">修改</span>
                 </span></td>
-                <td><button class="btn btn-danger">X</button></td>
+                <td>
+                    <button class="btn btn-danger" data-name="expired_time"
+                            data-goodid="{{ g.goodid }}" onclick="hsDeleteGood(this);">X</button>
+                </td>
             </tr>
             {% endif %}
             {% endfor %}
@@ -54,6 +57,21 @@
 
   {% include 'footer.html' %}
   <script>
+    function hsDeleteGood(btn) {
+        $.post(
+          "{{ url_for('ajax.admin.update_good') }}",
+          { _csrf_token_ : "{{ csrf_token() }}", goodid: btn.getAttribute("data-goodid"),
+            key: btn.getAttribute("data-name"), value: '2000-1-1'
+          },
+          function (data, textStatus) {
+            if (data.status!=0) {
+                alert("更新失败");
+                return;
+            }
+            btn.parentNode.parentNode.style.display = 'none';
+           }
+        );
+    }
     window.onload = function() {
         var editables = document.getElementsByClassName('cl-hs-good-editable');
         for (var i=0; i<editables.length; i++) {

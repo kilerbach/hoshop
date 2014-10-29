@@ -3,6 +3,8 @@
 
 Author: ilcwd
 """
+import datetime
+
 from ..models import (
     catalog as _catalog,
     good as _good,
@@ -38,6 +40,8 @@ def show_goods():
 def update_goods(goodid, **kw):
     if 'price' in kw:
         kw['price'] = encode_price(kw.pop('price'))
+    if 'expired_time' in kw:
+        kw['expired_time'] = datetime.datetime.strptime(kw.pop('expired_time'), '%Y-%m-%d')
 
     if _good.update_good(goodid, **kw):
         return HoShopDTO()
