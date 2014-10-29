@@ -10,28 +10,7 @@
     <div class="container">
 
     <form  class="form-horizontal" id="addGoodForm" method="post" action="{{ url_for('admin.add_good_do') }}" role="form" onsubmit="return addGoodValidateForm();" >
-      <div class="row form-group">
-          <label class="col-xs-2" for="inputName">商品名称</label>
-          <div class="col-xs-4">
-              <input name="name" type="text" class="form-control" id="inputName" placeholder="请输入商品名">
-          </div>
-      </div>
-
-      <div class="row form-group">
-          <label class="col-xs-2" for="inputPrice">商品价格</label>
-          <div class="col-xs-4 input-group">
-              <span class="input-group-addon">￥</span>
-              <input name="price" type="text" class="form-control" id="inputPrice" placeholder="请输入价格">
-          </div>
-      </div>
-      <div class="row form-group">
-          <label class="col-xs-2" for="inputTotal">商品库存</label>
-          <div class="col-xs-4">
-              <input name="total" type="text" class="form-control" id="inputTotal" value="999999" placeholder="请输入库存">
-          </div>
-      </div>
-
-      <div class="row form-group">
+        <div class="row form-group">
           <label class="col-xs-2">可选类别</label>
           <input id="inputHiddenSelectCatalog" type="hidden" name="catalog">
           <div class="row col-xs-10">
@@ -56,9 +35,30 @@
               <div></div>
           </div>
       </div>
+
+      <div class="row form-group">
+          <label class="col-xs-2" for="inputName">商品名称</label>
+          <div class="col-xs-4 input-group">
+              <input name="name" type="text" class="form-control" id="inputName" placeholder="请输入商品名">
+          </div>
+      </div>
+
+      <div class="row form-group">
+          <label class="col-xs-2" for="inputPrice">商品价格</label>
+          <div class="col-xs-4 input-group">
+              <span class="input-group-addon">￥</span>
+              <input name="price" type="text" class="form-control" id="inputPrice" placeholder="请输入价格">
+          </div>
+      </div>
+      <div class="row form-group">
+          <label class="col-xs-2" for="inputTotal">商品库存</label>
+          <div class="col-xs-4 input-group">
+              <input name="total" type="text" class="form-control" id="inputTotal" value="999999" placeholder="请输入库存">
+          </div>
+      </div>
       <div class="row form-group">
           <label class="col-xs-2" for="inputDescription">商品说明</label>
-          <div class="col-xs-4">
+          <div class="col-xs-4 input-group">
               <textarea rows="5" name="description" class="form-control" id="inputDescription" placeholder="请输入商品描述"></textarea>
           </div>
       </div>
