@@ -28,7 +28,10 @@ def update_good(goodid, **kw):
     good = sess.query(Good).filter(Good.goodid==goodid).one()
     for k, v in kw.iteritems():
         if k in contants.GOOD_EDITABLE_COLUMNS:
-            setattr(good, k, v)
+            if k == 'count_left':
+                setattr(good, 'count_total', good.count_sold+int(v))
+            else:
+                setattr(good, k, v)
 
     sess.add(good)
     return 1

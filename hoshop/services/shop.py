@@ -37,7 +37,7 @@ def show_goods():
 
 def update_goods(goodid, **kw):
     if 'price' in kw:
-        kw['price'] = encode_price(int(kw.pop('price')))
+        kw['price'] = encode_price(kw.pop('price'))
 
     if _good.update_good(goodid, **kw):
         return HoShopDTO()
