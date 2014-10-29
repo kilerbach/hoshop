@@ -7,6 +7,7 @@ from ..models import (
     cart as _cart,
     good as _good,
     contact as _contact,
+    _db,
 )
 
 from .dtos import HoShopDTO
@@ -25,6 +26,7 @@ def _validate_cart_op(userid, cartid):
 
 def add_good(userid, cartid, goodid):
     good = _good.get_good(goodid)
+
     cart, err = _validate_cart_op(userid, cartid)
     if err:
         return err
@@ -33,7 +35,7 @@ def add_good(userid, cartid, goodid):
     if ok:
         return HoShopDTO()
 
-    return HoShopDTO(error='can not add good to cart')
+    return HoShopDTO(error=u'库存不足')
 
 
 def delete_good(userid, cartid, goodid):
@@ -93,7 +95,10 @@ def submit_order(userid, cartid, address=None, set_default=False):
     _cart.create_order(cartid, contactid)
     goodlist = _cart.get_goodlist(cartid)
     for g in goodlist:
-        _good.update_good(g.goodid, count_sold_delta=g.count)
+        if not _good.update_good(g.goodid, count_sold_delta=g.count):
+            _db.get_session().rollback()
+            good = _good.get_good(g.goodid)
+            return HoShopDTO(error=u'商品“%s”库存不足' % good.name)
     # TODO: update goods
     return HoShopDTO()
 

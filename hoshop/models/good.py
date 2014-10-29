@@ -31,6 +31,10 @@ def update_good(goodid, **kw):
             if k == 'count_left':
                 setattr(good, 'count_total', good.count_sold+int(v))
             if k == 'count_sold_delta':
+                # not enough goods
+                if good.count_sold + int(v) > good.count_total:
+                    return 0
+
                 setattr(good, 'count_sold', good.count_sold+int(v))
             else:
                 setattr(good, k, v)

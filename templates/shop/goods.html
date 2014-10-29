@@ -99,6 +99,7 @@
     }
 
     function addToCart(goodid) {
+
         $.post(
           "{{ url_for('ajax.cart.add_good_to_cart') }}",
           {_csrf_token_: "{{ csrf_token() }}", goodid: goodid},

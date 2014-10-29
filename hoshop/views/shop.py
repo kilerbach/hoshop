@@ -23,14 +23,19 @@ def list_goods():
 
 
 @app.route('/cart/')
+@require_cart
 def get_cart():
     userid = flask.session['userid']
     cartid = flask.session['cartid']
     r = cart.get_cart_details(userid, cartid)
     cs = shop.find_contacts(userid)
 
+    error = flask.request.values.get('error', '')
+
     return flask.render_template("shop/cart.html", cart=r.data,
-                                 contacts=cs.data['contacts'], default_contact=cs.data['default'])
+                                 contacts=cs.data['contacts'],
+                                 default_contact=cs.data['default'],
+                                 error=error)
 
 
 @app.route('/order/')
@@ -53,6 +58,8 @@ def submit_order():
     r = cart.submit_order(userid, cartid, address, setdefault)
     if r.ok():
         flask.session.pop('cartid')
+    else:
+        return flask.redirect(flask.url_for('shop.get_cart', error=r.error))
 
     return flask.redirect(flask.url_for('shop.list_orders'))
 
