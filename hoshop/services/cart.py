@@ -88,6 +88,9 @@ def submit_order(userid, cartid, address=None, set_default=False):
     if int(userid) != cart.userid:
         return HoShopDTO(error=u"无权限提交订单")
 
+    if cart.count<=0:
+        return HoShopDTO(error=u"还没选择商品")
+
     contactid = _contact.create_contact(userid, address=address)
     if set_default:
         _contact.set_default_contact(userid, contactid)
