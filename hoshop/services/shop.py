@@ -99,13 +99,6 @@ def delete_contact(userid, contactid):
     return HoShopDTO(error='delete contact fail')
 
 
-def set_primary_contact(userid, contactid):
-    if _contact.set_default_contact(userid, contactid):
-        return HoShopDTO()
-
-    return HoShopDTO(error='update contact fail')
-
-
 def create_good(name, price, catalogid, total=99999999, description='', start_time=None, expired_time=None):
     price = encode_price(price)
     c = _catalog.get_catalog(catalogid);
