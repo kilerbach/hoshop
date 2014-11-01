@@ -12,27 +12,17 @@
     <form  class="form-horizontal" id="addGoodForm" method="post" action="{{ url_for('admin.add_good_do') }}" role="form" onsubmit="return addGoodValidateForm();" >
         <div class="row form-group">
           <label class="col-xs-2">可选类别</label>
-          <input id="inputHiddenSelectCatalog" type="hidden" name="catalog">
-          <div class="row col-xs-10">
+          <div class="row col-xs-10 cl-hs-category-ratios">
               {% for c in catalogs %}
-              <div class="col-xs-2">
+              <div class="col-xs-2 cl-hs-category-ratio-item">
                   <label class="radio-inline">
-                      <input type="radio" name="inputSelectCatalogRatio" id="inputSelectCatalog_{{ c.catalogid }}" value="{{ c.name }}">{{ c.name }}
+                      <input type="radio" name="catalogid" value="{{ c.catalogid }}"><span>{{ c.name }}</span>
                   </label>
               </div>
-
               {% endfor %}
-              <div class="col-xs-6 row">
-                  <div class="col-xs-3">
-                      <label class="radio-inline">
-                      <input type="radio" name="inputSelectCatalogRatio" id="inputSelectCatalog_0">其他
-                      </label>
-                  </div>
-                  <div class="col-xs-4">
-                      <input type="text" class="form-control" id="inputCustomCatalogValue" placeholder="添加新类别">
-                  </div>
+              <div class="col-xs-2 cl-hs-category-ratio-addition-button">
+                  <button type="button" class="btn btn-default" onclick="hsAddNewCategory()">添加新类别</button>
               </div>
-              <div></div>
           </div>
       </div>
 
@@ -76,6 +66,28 @@
           document.getElementById("id-hs-add-good").className += " active";
       };
 
+      function hsAddNewCategory() {
+          var p = prompt("输入新的类别：");
+          if (p!=null && p!="") {
+              $.post(
+                "{{ url_for('ajax.admin.add_new_category') }}",
+                { _csrf_token_: "{{ csrf_token() }}", name: p},
+                function (data, textStatus) {
+                    if (data.status != 0){
+                        alert(data.error);
+                        return
+                    }
+                    var firstratio = $(".cl-hs-category-ratios div:first-child").clone();
+                    firstratio.children("label").children('input').attr('value', data.data.catalogid).attr('checked', true);
+                    firstratio.children("label").children("span").text(data.data.name);
+
+                    $(".cl-hs-category-ratio-addition-button").before(firstratio);
+
+                }
+              );
+          }
+      }
+
       // $("#addGoodForm").fadeOut("slow");
       function addGoodValidateForm() {
         if (!document.getElementById("inputName").value) {
@@ -83,17 +95,8 @@
             return false;
         }
 
-        var otherCata = document.getElementById("inputSelectCatalog_0");
-        var catalog = document.getElementById("inputHiddenSelectCatalog");
-
-        var catalogname = document.getElementById("inputCustomCatalogValue").value;
-        if (!otherCata.checked) {
-            catalogname = $('input[name=inputSelectCatalogRatio]:checked', '#addGoodForm').val();
-        }
-        catalog.value = catalogname;
-
-        if (!catalogname) {
-            alert("选择或者输入类别！");
+        if ($( "input:checked" ).length != 1) {
+            alert("请选择一个类别！");
             return false;
         }
 

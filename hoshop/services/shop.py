@@ -21,8 +21,9 @@ def find_catalogs():
 
 
 def create_catalog(name):
-    if _catalog.create_catalog(name) == 1:
-        return HoShopDTO(data='')
+    catalog = _catalog.create_catalog(name)
+    if catalog is not None:
+        return HoShopDTO(data=catalog.dictify())
 
     return HoShopDTO(error='create catalog fail')
 
@@ -105,10 +106,10 @@ def set_primary_contact(userid, contactid):
     return HoShopDTO(error='update contact fail')
 
 
-def create_good(name, price, catalog, total=99999999, description='', start_time=None, expired_time=None):
+def create_good(name, price, catalogid, total=99999999, description='', start_time=None, expired_time=None):
     price = encode_price(price)
-    c = _catalog.get_or_create_catalog(catalog)
-    rows = _good.create_good(name, price, c.catalogid, total, description, start_time, expired_time)
+    c = _catalog.get_catalog(catalogid);
+    rows = _good.create_good(name, price, catalogid, total, description, start_time, expired_time)
 
     if rows == 1:
         return HoShopDTO(data='')

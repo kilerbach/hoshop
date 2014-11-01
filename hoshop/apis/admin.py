@@ -33,3 +33,11 @@ def update_good():
     value = flask.request.form['value']
     r = shop.update_goods(goodid, **{key: value})
     return _util.render_dto(r)
+
+
+@app.route('/category/addition', methods=['POST'])
+@default.require_admin
+def add_new_category():
+    name = flask.request.form['name']
+    r = shop.create_catalog(name)
+    return _util.render_dto(r)

@@ -3,6 +3,7 @@
 
 Author: ilcwd
 """
+import sqlalchemy.exc
 
 from . import _db
 from ._objects import Catalog
@@ -13,9 +14,19 @@ CATALOG_ROOT = 0
 def create_catalog(name):
     catalog = Catalog(name=name, parentid=CATALOG_ROOT)
 
-    _db.get_session().add(catalog)
+    sess = _db.get_session()
+    sess.add(catalog)
+    try:
+        sess.flush()
+    except sqlalchemy.exc.IntegrityError:
+        sess.rollback()
+        return None
 
-    return 1
+    return catalog
+
+
+def get_catalog(catalogid):
+    return _db.get_session().query(Catalog).filter(Catalog.catalogid==catalogid).one()
 
 
 def get_or_create_catalog(name):

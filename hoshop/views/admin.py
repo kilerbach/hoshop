@@ -34,11 +34,11 @@ def add_good_do():
     args = flask.request.form
     name = args['name']
     price = args['price']
-    catalog = args['catalog']
+    catalogid = args['catalogid']
     description = args['description']
     total = args['total']
 
-    r = shop.create_good(name, price, catalog, total, description)
+    r = shop.create_good(name, price, catalogid, total, description)
     if r.ok():
         pass
 
