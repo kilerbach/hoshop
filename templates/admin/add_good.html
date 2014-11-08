@@ -9,6 +9,10 @@
 
     <div class="container">
 
+    {% if error %}
+        <div class="alert alert-success">{{ error }}</div>
+    {% endif %}
+
     <form  class="form-horizontal" id="addGoodForm" method="post" action="{{ url_for('admin.add_good_do') }}" role="form" onsubmit="return addGoodValidateForm();" >
         <div class="row form-group">
           <label class="col-xs-2">可选类别</label>

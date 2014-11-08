@@ -73,6 +73,9 @@
         );
     }
     window.onload = function() {
+
+        document.getElementById("id-hs-update-good").className += " active";
+
         var editables = document.getElementsByClassName('cl-hs-good-editable');
         for (var i=0; i<editables.length; i++) {
             var input = editables[i];

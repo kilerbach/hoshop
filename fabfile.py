@@ -109,6 +109,7 @@ def deploy():
 
     # 1. initialize environment
     local("rm -f %s" % (TAR_NAME,))
+    local("rm -f %s*.tar" % (PROJECT_NAME))
     local("tar -czvf %s *" % (TAR_NAME, ))
 
     # 2. upload and extract source code

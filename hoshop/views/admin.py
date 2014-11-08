@@ -17,8 +17,9 @@ app = flask.Blueprint('admin', __name__, template_folder=TEMPLATE_ROOT)
 @require_admin
 def add_good_view():
     r = shop.find_catalogs()
+    error = flask.request.values.get('error', '')
     return flask.render_template('admin/add_good.html',
-                                 catalogs=r.data['catalogs'])
+                                 catalogs=r.data['catalogs'], error=error)
 
 
 @app.route('/good/update')
@@ -42,7 +43,7 @@ def add_good_do():
     if r.ok():
         pass
 
-    return flask.redirect(flask.url_for('shop.list_goods'))
+    return flask.redirect(flask.url_for('admin.add_good_view', error=u"添加商品成功"))
 
 
 @app.route('/order/', methods=['GET', 'POST'])
