@@ -26,7 +26,8 @@
                 </div>
                 <div class="col-xs-4 cl-hs-good-numberbar" id="id-hs-good-numberbar-{{ g.goodid }}">
                     <span class="btn btn-primary" onclick="deleteFromCart({{ g.goodid }})">—</span>
-                    <span class="btn btn-default" id="id-hs-good-number-{{ g.goodid }}" disabled>0</span>
+                    <span class="btn btn-default" id="id-hs-good-number-{{ g.goodid }}" style="color: red;" disabled>
+                    </span>
                 </div>
                 <div class="col-xs-4">
                     <button class="btn btn-primary" onclick="addToCart({{ g.goodid }})">￥{{ g.price/1000 }}</button>
