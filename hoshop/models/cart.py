@@ -159,9 +159,9 @@ def find_orders_incrementally(orderid=None, limit=10, asc=True):
 
     sess = _db.get_session()
     if asc:
-        orders = sess.query(Cart).filter(Cart.cartid > orderid).filter(Cart.is_commit == True).limit(limit).all()
+        orders = sess.query(Cart).filter(Cart.cartid > orderid).filter(Cart.is_commit == True).order_by(Cart.cartid.asc()).limit(limit).all()
     else:
-        orders = sess.query(Cart).filter(Cart.cartid < orderid).filter(Cart.is_commit == True).limit(limit).all()
+        orders = sess.query(Cart).filter(Cart.cartid < orderid).filter(Cart.is_commit == True).order_by(Cart.cartid.desc()).limit(limit).all()
 
     return orders
 

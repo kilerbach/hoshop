@@ -49,7 +49,12 @@ def add_good_do():
 @app.route('/order/', methods=['GET', 'POST'])
 @require_admin
 def list_orders():
-    r = cart.sync_orders(limit=10)
+    cursor = flask.request.values.get('cursor', None)
+    asc = int(flask.request.values.get('asc', 0))
+    r = cart.sync_orders(cursor, limit=5, asc=asc)
     return flask.render_template('admin/orders.html',
                                  orders=r.data['orders'],
-                                 forward_cursor=r.data.get('forward_cursor', ''))
+                                 forward_cursor=r.data.get('forward_cursor', ''),
+                                 backward_cursor=r.data.get('backward_cursor', ''),
+                                 latest_cursor=r.data.get('latest_cursor', ''),
+                                 )

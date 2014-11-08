@@ -148,6 +148,10 @@ def sync_orders(cursor=None, limit=10, asc=False):
         result['forward_cursor'] = forward_cursor
         result['backward_cursor'] = backward_cursor
 
+    latest_order = _cart.find_orders_incrementally(None, 1, False)[0]
+    latest_cursor = str(latest_order.cartid)
+    result['latest_cursor'] = latest_cursor
+
     return HoShopDTO(data=result)
 
 

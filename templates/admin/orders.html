@@ -50,6 +50,21 @@
     </div>
     {% endfor %}
 
+    <nav>
+      <ul class="pager">
+        {% if forward_cursor!=latest_cursor %}
+        <li class="previous" >
+            <a href="{{ url_for('admin.list_orders',cursor=forward_cursor,asc=1) }}">&larr; 更新的</a>
+        </li>
+        {% endif %}
+        {% if backward_cursor %}
+        <li class="next">
+            <a href="{{ url_for('admin.list_orders',cursor=backward_cursor,asc=0) }}">更旧的 &rarr;</a>
+        </li>
+        {% endif %}
+      </ul>
+    </nav>
+
     <div id="hd-new-orders" class="row alert alert-danger">
       <strong>注意：</strong>有
       <a href="{{ url_for('admin.list_orders') }}" class="alert-link">
@@ -61,7 +76,7 @@
   {% include 'footer.html' %}
   <script>
     var refreshIntervalId = 0;
-    var lastSyncCursor = "{{ forward_cursor }}";
+    var lastSyncCursor = "{{ latest_cursor }}";
 
 
     function hoshopColorizeOrderStatusButton(orderid, status) {
@@ -126,7 +141,7 @@
 
                 clearInterval(refreshIntervalId);
 
-                lastSyncCursor = data.data.forward_cursor;
+                lastSyncCursor = data.data.lastest_cursor;
 
                 var countNewOrders = document.getElementById("hd-new-orders-count");
                 countNewOrders.innerHTML = data.data.orders.length;
