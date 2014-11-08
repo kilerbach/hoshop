@@ -1,8 +1,49 @@
 
+    <div class="modal fade" id="id-hs-modal-ajax-waiting">
+    <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-body">
+            <p style="text-align: center; font-size: 32px;">
+                <span class="glyphicon glyphicon-refresh" id="id-hs-modal-ajax-waiting-loop"></span>
+                请求中
+                <span id="id-hs-modal-ajax-waiting-periods">...</span>
+            </p>
+        </div>
+        <div class="modal-footer" id="id-hs-modal-ajax-waiting-footer">
+            <button type="button" class="btn btn-danger center-block" data-dismiss="modal">取消</button>
+        </div>
+    </div>
+    </div>
+    </div>
+
 
     <div class="copyright" >
 		<p>© 2014 Ilcwd All Rights Reserved Ho道 <a href="http://www.miitbeian.gov.cn" target="_blank">粤ICP备14064412号-1</a> </p>
 	</div>
 
+
     <script src="//www.ho-dao.com/s/jquery/jquery-1.11.1.min.js"></script>
     <script src="//www.ho-dao.com/s/bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
+    <script>
+        $('#id-hs-modal-ajax-waiting').on('shown.bs.modal', function (e) {
+          // do something...
+        });
+
+        function hsShowWaitingModal(btn) {
+            $('#id-hs-modal-ajax-waiting').modal({
+                backdrop: 'static',
+                keyboard: false
+            });
+            $('#id-hs-modal-ajax-waiting-footer').hide();
+
+            setTimeout( function() {
+                $('#id-hs-modal-ajax-waiting-footer').fadeIn();
+            }, 2000);
+        }
+
+        function hsHideWaitingModal(btn) {
+            $('#id-hs-modal-ajax-waiting').modal('hide');
+        }
+
+
+    </script>

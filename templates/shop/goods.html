@@ -25,12 +25,12 @@
                     {% endif %}
                 </div>
                 <div class="col-xs-4 cl-hs-good-numberbar" id="id-hs-good-numberbar-{{ g.goodid }}">
-                    <span class="btn btn-primary" onclick="deleteFromCart({{ g.goodid }})">—</span>
+                    <span class="btn btn-primary" onclick="deleteFromCart(this, {{ g.goodid }})">—</span>
                     <span class="btn btn-default" id="id-hs-good-number-{{ g.goodid }}" style="color: red;" disabled>
                     </span>
                 </div>
                 <div class="col-xs-4">
-                    <button class="btn btn-primary" onclick="addToCart({{ g.goodid }})">￥{{ g.price/1000 }}</button>
+                    <button class="btn btn-primary" onclick="addToCart(this, {{ g.goodid }})">￥{{ g.price/1000 }}</button>
                 </div>
             </div>
             </li>
@@ -99,33 +99,44 @@
       });
     }
 
-    function addToCart(goodid) {
-
+    function addToCart(btn, goodid) {
+        btn.disabled = true;
+        var showModalTimeout = setTimeout(function() {
+            hsShowWaitingModal(btn);
+        }, 500);
         $.post(
           "{{ url_for('ajax.cart.add_good_to_cart') }}",
           {_csrf_token_: "{{ csrf_token() }}", goodid: goodid},
           function (data, textStatus){
-
+            clearTimeout(showModalTimeout);
+            hsHideWaitingModal(btn);
             if (data.status != 0) {
                 alert(data.error);
                 return;
             }
             flushCart();
       });
+      btn.disabled = false;
     }
 
-    function deleteFromCart(goodid) {
+    function deleteFromCart(btn, goodid) {
+        btn.disabled = true;
+        var showModalTimeout = setTimeout(function() {
+            hsShowWaitingModal(btn);
+        }, 500);
         $.post(
           "{{ url_for('ajax.cart.delete_good_from_cart') }}",
           {_csrf_token_: "{{ csrf_token() }}", goodid: goodid},
           function (data, textStatus){
-
+            clearTimeout(showModalTimeout);
+            hsHideWaitingModal(btn);
             if (data.status != 0) {
                 alert(data.error);
                 return;
             }
             flushCart();
       });
+      btn.disabled = false;
     }
 
     window.onload = function () {
