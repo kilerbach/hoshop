@@ -76,3 +76,19 @@ def update_order():
 
     r = cart.update_order(userid, orderid, status, '')
     return _util.render_dto(r)
+
+
+@app.route('/order/submit', methods=['POST'])
+def submit_order():
+    cartid = flask.session['cartid']
+    userid = flask.session['userid']
+    # TODO: avoid modify cart in other views
+
+    address = flask.request.form.get('address')
+    setdefault = flask.request.form['setdefault'].lower() == 'on'
+
+    r = cart.submit_order(userid, cartid, address, setdefault)
+    if r.ok():
+        flask.session.pop('cartid')
+
+    return _util.render_dto(r)

@@ -46,7 +46,6 @@
         </tbody>
     </table>
     {% if cart.count > 0%}
-    <form action="{{ url_for('shop.submit_order') }}" method="POST" role="form" onsubmit="return hsValidateSubmitOrderForm();">
     <table class="table table-bordered">
         <thead>
             <tr class="row"><th colspan="3">订单信息</th></tr>
@@ -72,7 +71,10 @@
             </td>
             <td class="col-xs-2">
                 <div class="checkbox">
-                    <label><input name="setdefault" type="checkbox" checked class="form-contrl">设为默认</label></div></td>
+                    <label><input name="setdefault" id="id-hs-submit-order-setdefault"
+                                  type="checkbox" checked class="form-contrl">设为默认</label>
+                </div>
+            </td>
         </tr>
         <tr class="row">
             <td class="col-xs-2">支付方式：</td>
@@ -83,9 +85,8 @@
 
     <div class="row">
         <input type="hidden" name="_csrf_token_" value="{{ csrf_token() }}">
-        <button class="btn btn-primary btn-lg pull-right" type="submit">确定下单</button>
+        <button id="id-hs-submit-order-button" class="btn btn-primary btn-lg pull-right" type="submit">确定下单</button>
     </div>
-    </form>
 
     {% else%}
         <div class="alert alert-info" role="alert">
@@ -94,18 +95,53 @@
     {% endif %}
     </div>
 
+
+    <div class="modal fade" id="id-hs-submit-order-modal">
+    <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header center-block ">
+            <h4 class="center-block">恭喜你~下单成功</h4>
+        </div>
+        <div class="modal-body">
+            <p>亲~请耐心等候，Ho-shop很快就会送货上门啦~</p>
+        </div>
+        <div class="modal-footer">
+            <a class="btn btn-primary center-block" href="{{ url_for('shop.list_orders') }}">点击查看订单状态</a></a>
+        </div>
+    </div>
+    </div>
+    </div>
+
   {% include 'footer.html' %}
 
   <script>
-      function hsValidateSubmitOrderForm() {
-          var address = document.getElementById("id-hs-address");
-          if (!address.value) {
-              alert("请输入宿舍地址");
-              return false;
-          }
+      $(document).ready(function() {
+        $("#id-hs-submit-order-button").click(function() {
+            var address = document.getElementById("id-hs-address");
+            var setdefault = document.getElementById("id-hs-submit-order-setdefault");
 
-          return true;
-      }
+            if (!address.value) {
+                alert("请输入宿舍地址");
+                return;
+            }
+
+            $.post(
+              "{{ url_for('ajax.cart.submit_order') }}",
+              {_csrf_token_: "{{ csrf_token() }}", address: address.value, setdefault: setdefault.value},
+              function (data, textStatus) {
+                  if (data.status!=0) {
+                      alert(data.error);
+                      return
+                  }
+                  $("#id-hs-submit-order-modal").modal({
+                    backdrop: 'static',
+                    keyboard: false
+                  });
+              }
+            );
+
+        });
+      });
 
       function hsSelectAddress(a) {
           var address = document.getElementById("id-hs-address");
