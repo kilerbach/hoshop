@@ -11,7 +11,7 @@
 
     {% for c in catalogs %}
         <div class="panel panel-info">
-            <div class="panel-heading">
+            <div class="panel-heading cl-hs-shop-category">
                 {{ c.name }}
             </div>
             <ul class="list-group">
@@ -24,12 +24,12 @@
                     <span class="label label-danger label-xs">库存不足10</span>
                     {% endif %}
                 </div>
-                <div class="col-xs-4 cl-hs-good-numberbar" id="id-hs-good-numberbar-{{ g.goodid }}">
-                    <span class="btn btn-primary" onclick="deleteFromCart(this, {{ g.goodid }})">—</span>
-                    <span class="btn btn-default" id="id-hs-good-number-{{ g.goodid }}" style="color: red;" disabled>
+                <div class="col-xs-5 cl-hs-good-numberbar" id="id-hs-good-numberbar-{{ g.goodid }}">
+                    <span class="btn btn-primary btn-sm" onclick="deleteFromCart(this, {{ g.goodid }})">—</span>
+                    <span class="btn btn-default btn-sm" id="id-hs-good-number-{{ g.goodid }}" style="color: red;" disabled>
                     </span>
                 </div>
-                <div class="col-xs-4">
+                <div class="col-xs-3">
                     <button class="btn btn-primary" onclick="addToCart(this, {{ g.goodid }})">￥{{ decode_price(g.price) }}</button>
                 </div>
             </div>

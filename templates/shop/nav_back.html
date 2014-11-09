@@ -1,10 +1,9 @@
 <nav class="navbar navbar-default" role="navigation">
   <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="{{ url_for('shop.list_goods') }}">
+
+    <a class="navbar-brand cl-hs-navback-brand" href="{{ url_for('shop.list_goods') }}">
         <span class="glyphicon glyphicon-chevron-left"></span>
-        {{ title }}
-      </a>
-    </div>
+    </a>
+    <a class="navbar-brand" href="{{ url_for('shop.list_goods') }}">{{ title }}</a>
   </div>
 </nav>

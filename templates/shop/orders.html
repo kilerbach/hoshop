@@ -16,16 +16,16 @@
     <div class="hd-user-order">
     <table class="table table-bordered">
         <thead>
-            <tr class="row">
-                <th class="col-xs-8">零食列表</th>
-                <th class="col-xs-2">{{ order.count }}份</th>
-                <th class="col-xs-2">￥{{ decode_price(order.bill) }}</th>
+            <tr class=" bg-info">
+                <th class="">零食列表</th>
+                <th class="">{{ order.count }}份</th>
+                <th class="">￥{{ decode_price(order.bill) }}</th>
             </tr>
         </thead>
         <tbody>
         {% for g in order.goodlist %}
         {% for idx in range(g.count) %}
-        <tr class="row">
+        <tr class="">
             <td>{{ g.name }}</td>
             <td>1份</td>
             <td>￥{{ decode_price(g.price) }}</td>
@@ -37,18 +37,18 @@
 
     <table class="table table-bordered">
         <thead>
-            <tr class="row"><th colspan="3">订单信息</th></tr>
+            <tr class="bg-info"><th colspan="3">订单信息</th></tr>
         </thead>
         <tbody>
-        <tr class="row">
+        <tr class="">
             <td class="col-xs-4">送达地址：</td>
             <td class="col-xs-8">{{ order.contact.address }}</td>
         </tr>
-        <tr class="row">
+        <tr class="">
             <td class="col-xs-4">支付方式：</td>
             <td class="col-xs-8">现金支付</td>
         </tr>
-        <tr class="row">
+        <tr class="">
             <td class="col-xs-4">订单状态：</td>
             <td>
             {% for s in order.status %}
