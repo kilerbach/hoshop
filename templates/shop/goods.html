@@ -30,7 +30,7 @@
                     </span>
                 </div>
                 <div class="col-xs-4">
-                    <button class="btn btn-primary" onclick="addToCart(this, {{ g.goodid }})">￥{{ g.price/1000 }}</button>
+                    <button class="btn btn-primary" onclick="addToCart(this, {{ g.goodid }})">￥{{ decode_price(g.price) }}</button>
                 </div>
             </div>
             </li>

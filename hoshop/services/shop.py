@@ -10,6 +10,7 @@ from ..models import (
     good as _good,
     contact as _contact,
 )
+from hoshop.core import misc
 
 from .dtos import HoShopDTO
 
@@ -40,7 +41,7 @@ def show_goods():
 
 def update_goods(goodid, **kw):
     if 'price' in kw:
-        kw['price'] = encode_price(kw.pop('price'))
+        kw['price'] = misc.encode_price(kw.pop('price'))
     if 'expired_time' in kw:
         kw['expired_time'] = datetime.datetime.strptime(kw.pop('expired_time'), '%Y-%m-%d')
 
@@ -48,21 +49,6 @@ def update_goods(goodid, **kw):
         return HoShopDTO()
 
     return HoShopDTO(error=u'更新商品失败')
-
-
-def encode_price(price):
-    """
-    存储中价格是精确到厘的
-    """
-    idx = price.find('.')
-    if idx < 0:
-        return int(price) * 1000
-
-    tailing = price[idx+1:]
-    if len(tailing) < 3:
-        tailing += '0' * (3-len(tailing))
-
-    return int(price[:idx]) * 1000 + int(tailing[:3])
 
 
 def get_primary_contact(userid):
@@ -100,7 +86,7 @@ def delete_contact(userid, contactid):
 
 
 def create_good(name, price, catalogid, total=99999999, description='', start_time=None, expired_time=None):
-    price = encode_price(price)
+    price = misc.encode_price(price)
     c = _catalog.get_catalog(catalogid);
     rows = _good.create_good(name, price, catalogid, total, description, start_time, expired_time)
 

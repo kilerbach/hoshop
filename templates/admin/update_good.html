@@ -31,7 +31,7 @@
                     </span>
                 </td>
                 <td>￥<span class="cl-hs-good-editable" data-name="price" data-goodid="{{ g.goodid }}">
-                        <span>{{ g.price/1000 }}</span>
+                        <span>{{ decode_price(g.price) }}</span>
                         <span class="label label-info cl-hs-good-editable-prompt">修改</span>
                 </span>
                 </td>

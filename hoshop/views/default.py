@@ -31,6 +31,7 @@ def inject_values():
         csrf_token=generate_csrf_token,
         session_userrole_key=SESSION_USERROLE,
         datetime_formatter=misc.DatetimeFormatter('Asia/Shanghai'),
+        decode_price=misc.decode_price,
     )
 
 

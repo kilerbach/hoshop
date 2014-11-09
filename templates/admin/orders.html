@@ -31,12 +31,12 @@
             <div class="col-xs-1">
             {% for g in order.goodlist %}
             {% for idx in range(g.count) %}
-                <div style="padding-bottom: 5px;">￥{{ g.price/1000 }}</div>
+                <div style="padding-bottom: 5px;">￥{{ decode_price(g.price) }}</div>
             {% endfor %}
             {% endfor %}
             </div>
             <div class="col-xs-1">{{ order.contact.address}}</div>
-            <div class="col-xs-1">￥{{ order.bill/1000 }}</div>
+            <div class="col-xs-1">￥{{ decode_price(order.bill) }}</div>
             <div class="col-xs-5">
                 <div class="hd-update-order-button-row" id="hd-order-status-{{ order.cartid }}" title="{{ order.current_status }}">
                     {% for i in [10, 20, 30, 40] %}

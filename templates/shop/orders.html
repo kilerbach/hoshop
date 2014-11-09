@@ -19,7 +19,7 @@
             <tr class="row">
                 <th class="col-xs-8">零食列表</th>
                 <th class="col-xs-2">{{ order.count }}份</th>
-                <th class="col-xs-2">￥{{ order.bill/1000 }}</th>
+                <th class="col-xs-2">￥{{ decode_price(order.bill) }}</th>
             </tr>
         </thead>
         <tbody>
@@ -28,7 +28,7 @@
         <tr class="row">
             <td>{{ g.name }}</td>
             <td>1份</td>
-            <td>￥{{ g.price/1000 }}</td>
+            <td>￥{{ decode_price(g.price) }}</td>
         </tr>
         {% endfor %}
         {% endfor %}
