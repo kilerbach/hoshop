@@ -17,7 +17,7 @@
 
     <table class="table table-bordered">
         <thead>
-            <tr class="row">
+            <tr class="row bg-info">
                 <th class="col-xs-8">零食列表</th>
                 <th class="col-xs-2">{{ cart.count }}份</th>
                 <th class="col-xs-2">￥{{ decode_price(cart.bill) }}</th>
@@ -48,7 +48,7 @@
     {% if cart.count > 0%}
     <table class="table table-bordered">
         <thead>
-            <tr class="row"><th colspan="3">订单信息</th></tr>
+            <tr class="row bg-info"><th colspan="3">订单信息</th></tr>
         </thead>
         <tbody>
         <tr class="row">
@@ -85,7 +85,7 @@
 
     <div class="row">
         <input type="hidden" name="_csrf_token_" value="{{ csrf_token() }}">
-        <button id="id-hs-submit-order-button" class="btn btn-primary btn-lg pull-right" type="submit">确定下单</button>
+        <button id="" class="btn btn-primary btn-lg pull-right" type="submit">确定下单</button>
     </div>
 
     {% else%}
