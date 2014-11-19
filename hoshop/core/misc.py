@@ -55,8 +55,6 @@ class DatetimeFormatter(object):
         return self._to_local_time(d).strftime("%H:%M")
 
 
-
-
 def encode_price(price):
     """
     存储中价格是精确到厘的

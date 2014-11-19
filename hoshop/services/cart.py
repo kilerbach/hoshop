@@ -9,6 +9,7 @@ from ..models import (
     contact as _contact,
     _db,
 )
+from ..biz import workinghour
 
 from .dtos import HoShopDTO
 
@@ -83,6 +84,10 @@ def get_cart_details(userid, cartid):
 
 
 def submit_order(userid, cartid, address=None, set_default=False):
+    rest_time = workinghour.is_rest_time()
+    if rest_time:
+        return HoShopDTO(error=rest_time)
+
     cart = _cart.get_cart(cartid)
 
     if int(userid) != cart.userid:

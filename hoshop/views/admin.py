@@ -6,6 +6,7 @@ Author: ilcwd
 
 import flask
 
+from ..biz import workinghour
 from ..services import shop, cart
 from ..core import TEMPLATE_ROOT
 from .default import require_admin
@@ -58,3 +59,18 @@ def list_orders():
                                  backward_cursor=r.data.get('backward_cursor', ''),
                                  latest_cursor=r.data.get('latest_cursor', ''),
                                  )
+
+
+@app.route('/workinghour', methods=['GET'])
+@require_admin
+def show_workinghour():
+    msg = workinghour.is_rest_time()
+    return flask.render_template('admin/workingtime.html', msg=msg)
+
+
+@app.route('/workinghour/addition', methods=['POST'])
+@require_admin
+def add_workinghour():
+    st = flask.request.form['start_time']
+    workinghour.create_working_hour(start_time=st, msg=u'小店休息中，营业开始时间：%(start_time)s')
+    return flask.redirect(flask.url_for('admin.show_workinghour'))

@@ -10,6 +10,7 @@ import functools
 
 import flask
 from flask import jsonify, request, session, render_template
+from dateutil import tz
 
 from hoshop.core import application, constants, misc
 from hoshop.services import cart as cartService
@@ -22,6 +23,9 @@ SESSION_CARTID = 'cartid'
 SESSION_USERID = 'userid'
 SESSION_USERROLE = 'user.role'
 
+DEFAULT_TIMEZONE = tz.gettz('Asia/Shanghai')
+
+
 @application.context_processor
 def inject_values():
     return dict(
@@ -30,7 +34,7 @@ def inject_values():
         csrf_token_key=CSRF_TOKEN_KEY,
         csrf_token=generate_csrf_token,
         session_userrole_key=SESSION_USERROLE,
-        datetime_formatter=misc.DatetimeFormatter('Asia/Shanghai'),
+        datetime_formatter=misc.DatetimeFormatter(DEFAULT_TIMEZONE),
         decode_price=misc.decode_price,
     )
 
@@ -100,6 +104,11 @@ def handle_404(ex):
 
 def render_error_page(msg, code=200):
     return render_template('error.html', msg=msg), code
+
+
+@application.before_request
+def set_timezone():
+    flask.g.timezone = DEFAULT_TIMEZONE
 
 
 @application.before_request

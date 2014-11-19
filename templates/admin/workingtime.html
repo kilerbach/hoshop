@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-hans">
+  <head>
+    {% include 'header.html' %}
+      <link href="//www.ho-dao.com/s/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet">
+
+  </head>
+  <body>
+
+
+    {% include 'admin/nav.html' %}
+
+
+    <div class="container">
+        {% if msg %}
+        <div class="panel panel-danger">
+            <div class="panel-heading">休息中</div>
+            <div class="panel-body">
+                {{ msg }}
+            </div>
+        </div>
+
+        <form class="form-inline" role="form" method="POST" action="{{ url_for('admin.add_workinghour') }}">
+            <input type="hidden" name="start_time" value="2000-1-1 0:0">
+            <input type="hidden" name="_csrf_token_" value="{{ csrf_token() }}">
+          <button type="submit" class="btn btn-default">开店工作！</button>
+        </form>
+        {% else %}
+        <div class="panel panel-success">
+            <div class="panel-heading">营业中</div>
+            <div class="panel-body">
+                当前营业中。
+            </div>
+        </div>
+
+        <form class="form-inline" role="form" method="POST" action="{{ url_for('admin.add_workinghour') }}">
+          <div class="form-group">
+            <div class="input-group">
+              <input type="text" name="start_time" class="form-control" id="is-hs-working-hour-input" placeholder="输入开店时间">
+            </div>
+          </div>
+            <input type="hidden" name="_csrf_token_" value="{{ csrf_token() }}">
+          <button type="submit" class="btn btn-default">关店休息！</button>
+        </form>
+        {% endif %}
+
+
+    </div>
+
+  {% include 'footer.html' %}
+  <script src="//www.ho-dao.com/s/datetimepicker/bootstrap-datetimepicker.min.js"></script>
+  <script>
+  $(document).ready(function() {
+      document.getElementById("id-hs-workinghour").className += " active";
+
+      $('#is-hs-working-hour-input').datetimepicker({
+          format: 'yyyy-mm-dd hh:ii',
+          startView: 1,
+          minView: 0,
+          maxView: 2,
+          todayBtn: true,
+          todayHighlight: true,
+          minuteStep: 5,
+          autoClose: true
+        });
+  });
+  </script>
+  </body>
+</html>
+

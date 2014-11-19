@@ -177,3 +177,12 @@ class UserLogin(Base, DictifyMixin):
 
 Index('_idx_userlogin_userid', UserLogin.userid)
 Index('_uidx_userlogin_t_id', UserLogin.logintype, UserLogin.loginid, unique=True)
+
+
+class NextWorkingHour(Base, DictifyMixin):
+    __tablename__ = 'nextWorkingHour'
+
+    autoid = Column(INT, primary_key=True)
+    start_time = Column(DATETIME)
+    enable = Column(BOOLEAN, default=False)
+    msg = Column(VARCHAR(128), nullable=False)

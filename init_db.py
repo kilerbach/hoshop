@@ -7,12 +7,11 @@ Author: ilcwd
 
 import wsgiapp
 
-from hoshop.models._db import Base, engine
+from hoshop.models._db import  db
 
 
 def main():
-    Base.metadata.create_all(engine)
-
+    db.create_all()
 
 if __name__ == '__main__':
     main()

@@ -7,8 +7,10 @@ import flask
 
 from ..services import shop
 from ..services import cart
+from ..biz import workinghour
 from ..core import TEMPLATE_ROOT
 from .default import require_user, require_cart
+
 
 app = flask.Blueprint('shop', __name__, template_folder=TEMPLATE_ROOT)
 
@@ -19,7 +21,7 @@ app = flask.Blueprint('shop', __name__, template_folder=TEMPLATE_ROOT)
 def list_goods():
     r = shop.show_goods()
     return flask.render_template('shop/goods.html',
-                                 catalogs=r.data['catalogs'], goods=r.data['goods'])
+                                 catalogs=r.data['catalogs'], goods=r.data['goods'], rest_time=workinghour.is_rest_time())
 
 
 @app.route('/cart/')
