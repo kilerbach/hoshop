@@ -6,7 +6,7 @@ Author: ilcwd
 import datetime
 
 from . import _db
-from ._objects import Good, now
+from ._objects import Good, now, GoodPhoto
 
 from hoshop.core import constants
 

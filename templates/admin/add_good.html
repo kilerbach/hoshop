@@ -61,7 +61,11 @@
       <button class="btn btn-primary">提交</button>
     </form>
 
+    </div>
 
+    <div>
+        <input type="file" name="photo_file" id="uploadPhotoInput">
+        <button class="btn btn-primary" onclick="hsUploadPhoto123();">上传图片</button>
     </div>
 
   {% include 'footer.html' %}
@@ -69,6 +73,34 @@
       window.onload = function () {
           document.getElementById("id-hs-add-good").className += " active";
       };
+
+
+       function hsUploadPhoto123() {
+           var mydata = new FormData();
+           $.each($('#uploadPhotoInput')[0].files, function (i, file) {
+               mydata.append('file-' + i, file);
+           });
+
+           mydata.append('_csrf_token_', "{{ csrf_token() }}");
+
+           $.ajax(
+                   {
+                       url: "{{ url_for('ajax.admin.upload_photo') }}",
+                       data: mydata,
+                       cache: false,
+                       contentType: 'multipart/form-data',
+                       processData: false,
+                       type: 'POST',
+                       success: function (data, textStatus) {
+                           if (data.status != 0) {
+                               alert(data.error);
+                               return
+                           }
+                           alert("new photo:" + data.data.hello);
+                       }
+                   }
+           )
+       }
 
       function hsAddNewCategory() {
           var p = prompt("输入新的类别：");

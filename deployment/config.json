@@ -10,5 +10,7 @@
 
     "SERVER_PASSWORD_KEY": "_your_password_encrypt_key_",
 
+    "PHOTO_DIR": "/data/apps/hoshop/data",
+
     "LOGIN_URL_EXPIRES": 600000
 }

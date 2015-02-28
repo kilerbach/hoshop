@@ -4,13 +4,15 @@
 Author: ilcwd
 """
 import datetime
+import uuid
+import os
 
 from ..models import (
     catalog as _catalog,
     good as _good,
     contact as _contact,
 )
-from hoshop.core import misc
+from hoshop.core import misc, C
 
 from .dtos import HoShopDTO
 
@@ -94,3 +96,12 @@ def create_good(name, price, catalogid, total=99999999, description='', start_ti
         return HoShopDTO(data='')
 
     return HoShopDTO(error='create good fail')
+
+
+def save_photo(name, fp):
+    name = uuid.uuid4().hex + os.path.splitext(name)[-1]
+    path = os.path.join(C.PHOTO_DIR, name)
+    with open(path, 'wb') as f:
+        f.write(fp.read())
+
+    return name

@@ -44,11 +44,15 @@ def set_default_contact():
 
 @app.route('/hodaologin')
 def hodao_login():
-    s = flask.request.values['s']
-    t = flask.request.values['t']
-    u = flask.request.values['u']
+    # s = flask.request.values['s']
+    # t = flask.request.values['t']
+    # u = flask.request.values['u']
     next = flask.request.values.get('next', '')
-    r = _user.hodao_login(u, s, t)
+    user = flask.session.get('user')
+    if not user:
+        return flask.render_template('user/login.html', next=next, error=u"需要登录")
+
+    r = _user.hodao_login(user, None, None)
     if r.ok():
         flask.session['userid'] = r.data['userid']
         flask.session['user.role'] = r.data['role']

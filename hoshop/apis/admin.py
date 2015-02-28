@@ -41,3 +41,16 @@ def add_new_category():
     name = flask.request.form['name']
     r = shop.create_catalog(name)
     return _util.render_dto(r)
+
+
+@app.route('/good/uploadphoto', methods=['POST'])
+@default.require_admin
+def upload_photo():
+    print flask.request.form
+    print flask.request.files
+    photo_fs = flask.request.files['photo_file']
+    name = shop.save_photo(photo_fs.filename, photo_fs.stream)
+
+    photo_fs.close()
+
+    return _util.render_data({'hello': name})

@@ -116,6 +116,11 @@ def csrf_protect():
     if request.method == "POST":
         session_token = session.get(CSRF_TOKEN_KEY)
         form_token = request.form.get(CSRF_TOKEN_KEY)
+        if not form_token:
+            print request.files
+            print request.values
+            print request.form
+            form_token = request.files.get(CSRF_TOKEN_KEY)
 
         if not session_token or session_token != form_token:
             return render_error_page(u'跨站错误')
