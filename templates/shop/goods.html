@@ -71,7 +71,7 @@
             var count = document.getElementById("hd-cart-count");
             var bill = document.getElementById("hd-cart-bill");
             var submitbutton = document.getElementById("hd-cart-submit");
-            if (data.data.bill > 7) {
+            if (data.data.bill/1000 >= 7) {
                 submitbutton.disabled = false;
                 submitbutton.innerHTML = "去结算";
             } else {
@@ -79,7 +79,7 @@
                 submitbutton.disabled = true;
             }
             count.innerHTML = data.data.count;
-            bill.innerHTML = data.data.bill > 7;
+            bill.innerHTML = data.data.bill/1000;
 
             var i;
             var bars = document.getElementsByClassName("cl-hs-good-numberbar");
