@@ -32,7 +32,7 @@ DEPLOYMENT_CONFIGS = [
 @task
 def production():
     env.hosts = [
-        'root@182.92.107.122',
+        'root@120.24.84.20',
     ]
 
 

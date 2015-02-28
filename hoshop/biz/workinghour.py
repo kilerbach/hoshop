@@ -18,7 +18,7 @@ def create_working_hour(start_time, msg):
         st = datetime.datetime.strptime(start_time, "%Y-%m-%d %H:%M")
     except (TypeError, ValueError):
         return 0
-    
+
     st = arrow.get(st, flask.g.timezone)
     return working.create_workinghour(datetime.datetime(*st.utctimetuple()[:6]), msg)
 

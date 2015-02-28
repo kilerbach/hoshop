@@ -53,6 +53,17 @@ class Good(Base, DictifyMixin):
 Index('_idx_good_catalogid', Good.catalogid)
 
 
+class GoodPhoto(Base, DictifyMixin):
+    __tablename__ = 'goodPhoto'
+
+    photoid = Column(INT, primary_key=True)
+    goodid = Column(INT, nullable=False)
+    path = Column(VARCHAR(128), nullable=False)
+    ctime = Column(DATETIME(), nullable=False, default=now)
+
+Index('_idx_goodphoto_goodid', GoodPhoto.goodid)
+
+
 class Catalog(Base, DictifyMixin):
     __tablename__ = 'catalog'
 
