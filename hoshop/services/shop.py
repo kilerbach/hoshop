@@ -41,6 +41,11 @@ def show_goods():
     ))
 
 
+def get_good(goodid):
+    good, photos = _good.get_good_and_photos(goodid)
+    return HoShopDTO(data=dict(good=good, photos=photos))
+
+
 def update_goods(goodid, **kw):
     if 'price' in kw:
         kw['price'] = misc.encode_price(kw.pop('price'))
@@ -87,12 +92,16 @@ def delete_contact(userid, contactid):
     return HoShopDTO(error='delete contact fail')
 
 
-def create_good(name, price, catalogid, total=99999999, description='', start_time=None, expired_time=None):
+def create_good(name, price, catalogid, total=99999999, description='', start_time=None, expired_time=None, photos=None):
     price = misc.encode_price(price)
     c = _catalog.get_catalog(catalogid);
-    rows = _good.create_good(name, price, catalogid, total, description, start_time, expired_time)
+    goodid = _good.create_good(name, price, catalogid, total, description, start_time, expired_time)
 
-    if rows == 1:
+    print "goodid:", goodid
+    if photos:
+        _good.upload_good_photos(goodid, photos)
+
+    if goodid:
         return HoShopDTO(data='')
 
     return HoShopDTO(error='create good fail')

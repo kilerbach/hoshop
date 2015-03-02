@@ -19,7 +19,7 @@
             {% if g.catalogid == c.catalogid %}
             <li class="list-group-item">
             <div class="row">
-                <div class="col-xs-4" onclick="alert('{{ g.description }}');">{{ g.name }}
+                <div class="col-xs-4"><a href="{{ url_for('shop.get_good', goodid=g.goodid) }}">{{ g.name }}</a>
                     {% if g.count_total - g.count_sold < 10 %}
                     <span class="label label-danger label-xs">库存不足10</span>
                     {% endif %}

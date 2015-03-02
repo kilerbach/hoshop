@@ -14,7 +14,7 @@ from .exceptions import *
 from .misc import get_template_path, TEMPLATE_ROOT, STATIC_ROOT
 
 # Main application
-application = flask.Flask(__name__, static_folder=STATIC_ROOT)
+application = flask.Flask(__name__, static_folder=STATIC_ROOT, static_url_path='/hoshop/static')
 
 # logger for RPC time cost.
 spy_logger = logging.getLogger('hoshop.spy')

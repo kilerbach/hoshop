@@ -24,6 +24,13 @@ def list_goods():
                                  catalogs=r.data['catalogs'], goods=r.data['goods'], rest_time=workinghour.is_rest_time())
 
 
+@app.route('/good/<int:goodid>')
+def get_good(goodid):
+
+    r = shop.get_good(goodid)
+    return flask.render_template('shop/detail.html', photos=r.data['photos'])
+
+
 @app.route('/cart/')
 @require_cart
 def get_cart():

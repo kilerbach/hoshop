@@ -2,6 +2,9 @@
 <html lang="zh-cmn-hans">
   <head>
     {% include 'header.html' %}
+
+    <link href="{{ url_for('static', filename='css/layout.css') }}" type="text/css" rel="stylesheet" />
+
   </head>
   <body>
 
@@ -10,13 +13,62 @@
     {% endwith %}
 
     <div class="container">
+        这是商品信息
+
+        {{ photos[0].path }}
+
+        <div>
+	<article>
+	  <!--scroll-->
+	  <div class="scroll relative" style="
+    margin-top: 3%;
+    margin-bottom: 3%;
+">
+	    <div class="scroll_box" id="scroll_img">
+        <ul class="scroll_wrap">
+            {% for p in photos %}
+          <li><a href="#"><img src="{{ url_for('static.serve_static', name=p.path) }}" width="100%" /></a></li>
+            {% endfor %}
+        </ul>
+	    </div>
+      <span class="scroll_position_bg opacity6"></span>
+      <ul class="scroll_position" id='scroll_position'>
+          <li class="on"><a href="javascript:void(0);">1</a></li>
+          <li><a href="javascript:void(0);">2</a></li>
+          <li><a href="javascript:void(0);">3</a></li>
+      </ul>
+	  </div>
+	  <!--scroll-->
+  </article>
+</div>
+
     </div>
 
 
   {% include 'footer.html' %}
 
+    <script src="{{ url_for('static', filename='js/hhswipe.js') }}"></script>
   <script>
+      var slider = Swipe(document.getElementById('scroll_img'), {
+	auto: 3000,
+	continuous: true,
+	callback: function(pos) {
+		var i = bullets.length;
+		while (i--) {
+			bullets[i].className = ' ';
+		}
+		bullets[pos].className = 'on';
+	}
+});
+var bullets = document.getElementById('scroll_position').getElementsByTagName('li');
+$(function(){
+	$('.scroll_position_bg').css({
+		width:$('#scroll_position').width()
+	});
+});
+
   </script>
+
   </body>
 </html>
 

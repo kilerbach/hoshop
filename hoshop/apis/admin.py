@@ -46,11 +46,15 @@ def add_new_category():
 @app.route('/good/uploadphoto', methods=['POST'])
 @default.require_admin
 def upload_photo():
-    print flask.request.form
-    print flask.request.files
-    photo_fs = flask.request.files['photo_file']
-    name = shop.save_photo(photo_fs.filename, photo_fs.stream)
 
-    photo_fs.close()
+    photo_names = []
+    for i in xrange(100):
+        photo_fs = flask.request.files.get('photo-file-%d' % i)
+        if not photo_fs:
+            break
 
-    return _util.render_data({'hello': name})
+        name = shop.save_photo(photo_fs.filename, photo_fs.stream)
+        photo_names.append(name)
+        photo_fs.close()
+
+    return _util.render_data({'photos': photo_names})

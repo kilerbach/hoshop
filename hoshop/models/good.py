@@ -58,8 +58,26 @@ def create_good(name, price, catalogid, total=99999999, description='', start_ti
         expired_time=expired_time,
     )
 
-    _db.get_session().add(good)
+    session = _db.get_session()
+    session.add(good)
+    session.flush()
+    return good.goodid
+
+
+def upload_good_photos(goodid, photos):
+    session = _db.get_session()
+    for p in photos:
+        gp = GoodPhoto(goodid=goodid, path=p)
+        session.add(gp)
+
     return 1
+
+
+def get_good_and_photos(goodid):
+    sess = _db.get_session()
+    good = sess.query(Good).filter(Good.goodid == goodid).one()
+    photos = sess.query(GoodPhoto).filter(GoodPhoto.goodid == goodid).all()
+    return good, photos
 
 
 def find_goods():

@@ -29,6 +29,7 @@ from hoshop.views import (
     default,
     admin,
     user,
+    static,
 )
 from hoshop.apis import (
     catalog as _apis_catalog,
@@ -42,6 +43,8 @@ application.register_blueprint(_apis_catalog.app, url_prefix='/hoshop/ajax')
 application.register_blueprint(_apis_cart.app, url_prefix='/hoshop/ajax')
 application.register_blueprint(admin.app, url_prefix='/hoshop/admin')
 application.register_blueprint(_apis_admin.app, url_prefix='/hoshop/admin')
+
+application.register_blueprint(static.app, url_prefix='/hoshop/s')
 
 
 def main():
