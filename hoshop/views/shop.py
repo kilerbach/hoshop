@@ -28,7 +28,7 @@ def list_goods():
 def get_good(goodid):
 
     r = shop.get_good(goodid)
-    return flask.render_template('shop/detail.html', photos=r.data['photos'])
+    return flask.render_template('shop/detail.html', photos=r.data['photos'], good=r.data['good'])
 
 
 @app.route('/cart/')

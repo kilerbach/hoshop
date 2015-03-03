@@ -42,8 +42,9 @@ def add_good_do():
     photos = args['photos']
 
     if photos:
-        photos = photos.split(',')
+        photos = filter(None, photos.split(','))
 
+    print args
     r = shop.create_good(name, price, catalogid, total, description, photos=photos)
     if r.ok():
         pass

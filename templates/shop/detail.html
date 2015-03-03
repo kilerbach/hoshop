@@ -13,34 +13,52 @@
     {% endwith %}
 
     <div class="container">
-        这是商品信息
-
-        {{ photos[0].path }}
-
+        {% if photos %}
         <div>
-	<article>
-	  <!--scroll-->
-	  <div class="scroll relative" style="
-    margin-top: 3%;
-    margin-bottom: 3%;
-">
-	    <div class="scroll_box" id="scroll_img">
-        <ul class="scroll_wrap">
-            {% for p in photos %}
-          <li><a href="#"><img src="{{ url_for('static.serve_static', name=p.path) }}" width="100%" /></a></li>
-            {% endfor %}
-        </ul>
-	    </div>
-      <span class="scroll_position_bg opacity6"></span>
-      <ul class="scroll_position" id='scroll_position'>
-          <li class="on"><a href="javascript:void(0);">1</a></li>
-          <li><a href="javascript:void(0);">2</a></li>
-          <li><a href="javascript:void(0);">3</a></li>
-      </ul>
-	  </div>
-	  <!--scroll-->
-  </article>
-</div>
+            <article>
+            <!--scroll-->
+            <div class="scroll relative" style="margin-top: 3%;margin-bottom: 3%;">
+                <div class="scroll_box" id="scroll_img">
+                    <ul class="scroll_wrap">
+                        {% for p in photos %}
+                        <li><a href="#"><img src="{{ url_for('static.serve_static', name=p.path) }}" width="100%" /></a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <span class="scroll_position_bg opacity6"></span>
+                <ul class="scroll_position" id='scroll_position'>
+                    {% for i in range(photos.__len__()) %}
+                        <li {% if i==0 %}class="on"{% endif%} ><a href="javascript:void(0);">{{ i+1 }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <!--scroll-->
+            </article>
+        </div>
+
+        {% endif %}
+
+        <div class="panel panel-info">
+            <div class="panel-heading">{{ good.name }}</div>
+            <div class="panel-body">
+                <p>{{ good.description }}</p>
+            </div>
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-xs-5 cl-hs-good-numberbar" id="id-hs-good-numberbar-{{ good.goodid }}">
+                            <span class="btn btn-primary btn-sm" onclick="deleteFromCart(this, {{ good.goodid }})">—</span>
+                            <span class="btn btn-default btn-sm" id="id-hs-good-number-{{ g.goodid }}" style="color: red;" disabled>
+                            </span>
+                        </div>
+                        <div class="col-xs-3">
+                            <button class="btn btn-primary" onclick="addToCart(this, {{ good.goodid }})">￥{{ decode_price(good.price) }}</button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
 
     </div>
 

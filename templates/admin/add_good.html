@@ -2,6 +2,8 @@
 <html lang="zh-cmn-hans">
   <head>
     {% include 'header.html' %}
+
+    <link href="{{ url_for('static', filename='css/jasny-bootstrap.min.css') }}" rel="stylesheet">
   </head>
   <body>
 
@@ -56,6 +58,24 @@
               <textarea rows="5" name="description" class="form-control" id="inputDescription" placeholder="请输入商品描述"></textarea>
           </div>
       </div>
+
+
+      <div class="row form-group" id="hsGoodPhotoList">
+          <label class="col-xs-2" for="inputDescription">商品图片</label>
+      <div class="fileinput fileinput-new" data-provides="fileinput" id="hsFileInput-1">
+  <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+  <div>
+    <span class="btn btn-default btn-file">
+        <span class="fileinput-new">选择图片</span>
+        <span class="fileinput-exists">重新选择</span>
+        <input type="file" class="hsUploadPhotoInput">
+        <input type="hidden" class="hsUploadPhotoName">
+    </span>
+    <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">删除</a>
+  </div>
+</div>
+      </div>
+
       <input type="hidden" name="_csrf_token_" value="{{ csrf_token() }}">
       <input type="hidden" name="photos" value="" id="hsPhotoNames">
 
@@ -64,31 +84,64 @@
 
     </div>
 
-    <div id="hsPhotoUploadList">
-        <input type="file" name="photo_file" class="hsUploadPhotoInput">
-        <button class="btn btn-primary" onclick="hsAddMorePhoto(this);">添加图片</button>
-        <button class="btn btn-primary" onclick="hsUploadPhoto123();">上传图片</button>
-    </div>
 
   {% include 'footer.html' %}
+  <script src="{{ url_for('static', filename='js/jasny-bootstrap.min.js') }}"></script>
   <script>
+        var MAX_PHOTOS_NUMBER = 3;
+        var current_index = 1;
+        var fileInputTemplte = $('#hsFileInput-1');
+
+        function addNewFileInput() {
+          if (current_index < MAX_PHOTOS_NUMBER) {
+              current_index++;
+              var newNode = fileInputTemplte.clone().prop({id: 'hsFileInput-' + current_index});
+              newNode.fileinput('clear');
+              newNode.style = 'display: block';
+              newNode.appendTo('#hsGoodPhotoList');
+          }
+        }
+
       window.onload = function () {
-          document.getElementById("id-hs-add-good").className += " active";
+        document.getElementById("id-hs-add-good").className += " active";
+
+        //
+        $(document).on('change.bs.fileinput', function (e) {
+//            alert(e.target.id + 'is change');
+
+            var filename = hsUploadPhoto123($(e.target));
+            addNewFileInput();
+        });
+
+        $(document).on('clear.bs.fileinput', function (e) {
+            alert(e.target.id + 'is clear');
+
+            $(e.target).find(".hsUploadPhotoName")[0].value = '';
+        });
+
+        $(document).on('reset.bs.fileinput', function (e) {
+            alert(e.target.id + 'is reset');
+        });
+
       };
 
-      function hsAddMorePhoto(self) {
+      function hsAddMorePhotoInput(self) {
           var newNode = $('<input type="file" name="photo_file" class="hsUploadPhotoInput">');
           newNode.insertBefore(self);
-
       }
 
-       function hsUploadPhoto123() {
-           var mydata = new FormData();
-           $.each($('.hsUploadPhotoInput'), function (i, file) {
-               mydata.append('photo-file-' + i, file.files[0]
-               );
-           });
+      function test1() {
+          alert($('.hsUploadPhotoInput')[0].files[0])
+      }
 
+
+       function hsUploadPhoto123(node) {
+
+           var fileinput = node.find('.hsUploadPhotoInput')[0];
+           var nameinput = node.find('.hsUploadPhotoName')[0];
+           var mydata = new FormData();
+
+           mydata.append('photo-file-0', fileinput.files[0]);
            mydata.append('_csrf_token_', "{{ csrf_token() }}");
 
            // It’s imperative that you set the contentType option to false,
@@ -109,8 +162,7 @@
                        alert(data.error);
                        return
                    }
-                   alert("图片上传成功：" + data.data.photos);
-                   $("#hsPhotoNames").val(data.data.photos);
+                   nameinput.value = data.data.photos[0];
                }
            })
        }
@@ -154,9 +206,16 @@
             return false;
         }
 
-        if (!document.getElementById("hsPhotoNames").value) {
+        var photonames = "";
+        jQuery.each($('.hsUploadPhotoName'), function (index, item) {
+          photonames = photonames + item.value + ','
+        });
+
+        if (!photonames) {
             return confirm("你没有上传任何图片，是否继续？");
         }
+
+        document.getElementById("hsPhotoNames").value = photonames;
 
         return true;
       }
