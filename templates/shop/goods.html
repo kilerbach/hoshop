@@ -77,11 +77,11 @@
             var count = document.getElementById("hd-cart-count");
             var bill = document.getElementById("hd-cart-bill");
             var submitbutton = document.getElementById("hd-cart-submit");
-            if (data.data.bill/1000 >= 7) {
+            if (data.data.count > 0) {
                 submitbutton.disabled = false;
                 submitbutton.innerHTML = "去结算";
             } else {
-                submitbutton.innerHTML = "起送价7元哦";
+                submitbutton.innerHTML = "还没买东西哦";
                 submitbutton.disabled = true;
             }
             count.innerHTML = data.data.count;
